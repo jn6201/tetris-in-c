@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct person{
+	char name[20];
+	int score;
+	char string[32];
+};
+int i=0;
+void rankscore(struct person *p);
+/*输出排行榜*/ 
+int ranking_list(){
+	FILE *fp;
+	int j=0;
+	struct person players[50];
+	if((fp=fopen("./file.txt","r"))==NULL){
+		printf("\n open file Fail,close!");
+		getchar();
+		exit(1);
+	  }
+	while(!feof(fp)){
+		fgets(players[j].name,20,fp);
+	    fgets(players[j].string,32,fp);
+	    players[j].score=atoi(players[j].string);
+	    j++;
+	}
+	rankscore(players); 
+	for(j=0;j<=i;j++){
+		printf("%s %d\n",players[j].name,players[j].score);
+	}
+	return 0;
+}
+/*排序成绩*/ 
+void rankscore(struct person *p){
+     int j,k;
+     struct person temp;
+     for(k=0;k<=i;k++)
+        for(j=0;j<=i-k;j++){
+     	    if(p[j].score<p[j+1].score){
+     		    strcpy(temp.name,p[j].name);
+     	      	temp.score=p[j].score;
+     	    	strcpy(p[j].name,p[j+1].name);
+     	    	p[j].score=p[j+1].score;
+          		strcpy(p[j+1].name,temp.name);
+     	    	p[j+1].score=temp.score;
+		    }
+	    }
+	
+}
