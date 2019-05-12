@@ -1,0 +1,22 @@
+/*创建文件并输入成绩*/ 
+void memoryscore(struct person *persons){
+	FILE *fp;
+		if(i=0){
+	  if((fp=fopen("./file.txt","w"))==NULL){
+		printf("\n open file Fail,close!");
+		getchar();
+		exit(1);
+	  }
+    }
+    else {
+	  if((fp=fopen("./file.txt","a"))==NULL){
+		printf("\n open file Fail,close!");
+		getchar();
+		exit(1);
+	   }
+    }
+	itoa(persons[i].score,persons[i].string,10);
+	fputs(persons[i].name,fp);
+	fputs(persons[i].string,fp);
+	fclose(fp);
+}
