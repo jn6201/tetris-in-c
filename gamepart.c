@@ -21,6 +21,8 @@
 
 void KeyboardEventProcess(int key, int event);
 void TimerEventProcess(int timerID);/*定时器消息回调函数*/
+void BlockMove(int direction);
+void BlockInit();
 
 void MAINGAME(){
 	registerKeyboardEvent(KeyboardEventProcess);/*注册键盘消息回调函数*/
