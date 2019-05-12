@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include<time.h>
 
 #include <windows.h>
 #include <olectl.h>
@@ -22,7 +23,13 @@
 void KeyboardEventProcess(int key, int event);
 void TimerEventProcess(int timerID);/*定时器消息回调函数*/
 void BlockMove(int direction);
-void BlockInit();
+void BlockInit(){
+	srand((int)time(0)); 
+	int t=rand()%6;
+	switch t{
+		case 1:
+	}
+}
 
 void MAINGAME(){
 	registerKeyboardEvent(KeyboardEventProcess);/*注册键盘消息回调函数*/
