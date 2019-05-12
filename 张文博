@@ -1,0 +1,9 @@
+1，建立结构数组存储玩家姓名得分。
+struct person{
+	char name[20];
+	int score;
+	char string[32];
+};
+2，全局变量i,控制结构数组玩家资料个数。
+3，函数void memoryscore(struct person *persons)创建文件并每次存入资料。
+
