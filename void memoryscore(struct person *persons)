@@ -26,6 +26,8 @@ void memoryscore(struct person *persons){
     }
 	itoa(persons[i].score,persons[i].string,10);
 	fputs(persons[i].name,fp);
+	fputc('\n',fp);
 	fputs(persons[i].string,fp);
+	fputc('\n',fp);
 	fclose(fp);
 }
