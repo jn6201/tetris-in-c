@@ -18,17 +18,19 @@
 
 #define TIMER_BLINK500  1     /*500ms定时器事件标志号*/
 #define TIMER_BLINK1000 2     /*1000ms定时器时间标志号*/
+#define xiangsu 20
 
 
 void KeyboardEventProcess(int key, int event);
 void TimerEventProcess(int timerID);/*定时器消息回调函数*/
 void BlockMove(int direction);
+void DrawBlock(int a,int b,int x,int y);
+void DrawMap();
+
 void BlockInit(){
 	srand((int)time(0)); 
-	int t=rand()%6;
-	switch t{
-		case 1:
-	}
+	int t=rand()%7;
+	DrawBlock(t,0,1,5);
 }
 
 void MAINGAME(){
