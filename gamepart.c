@@ -16,37 +16,82 @@
 #include <ocidl.h>
 #include <winuser.h>
 
-#define TIMER_BLINK500  1     /*500ms¶¨Ê±Æ÷ÊÂ¼ş±êÖ¾ºÅ*/
-#define TIMER_BLINK1000 2     /*1000ms¶¨Ê±Æ÷Ê±¼ä±êÖ¾ºÅ*/
-#define xiangsu 20
+#define TIMER_BLINK500  1     /*500msÂ¶Â¨ÃŠÂ±Ã†Ã·ÃŠÃ‚Â¼Ã¾Â±ÃªÃ–Â¾ÂºÃ…*/
+#define TIMER_BLINK1000 2     /*1000msÂ¶Â¨ÃŠÂ±Ã†Ã·ÃŠÂ±Â¼Ã¤Â±ÃªÃ–Â¾ÂºÃ…*/
+#define xiangsu 0.2
 
 
 void KeyboardEventProcess(int key, int event);
-void TimerEventProcess(int timerID);/*¶¨Ê±Æ÷ÏûÏ¢»Øµ÷º¯Êı*/
+void TimerEventProcess(int timerID);/*Â¶Â¨ÃŠÂ±Ã†Ã·ÃÃ»ÃÂ¢Â»Ã˜ÂµÃ·ÂºÂ¯ÃŠÃ½*/
+
 void BlockMove(int direction);
-void DrawBlock(int a,int b,int x,int y);
-void DrawMap();
+void FillaBlock(int x,int y,int color);
+void DrawBlock(int a,int b,int x,int y){
+switch(a){
+	case 0: SetPenColor("Blue");
+			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+			drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+			drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+			drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+			break;
+	case 1: SetPenColor("Yellow");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+					}
+	case 2: SetPenColor("Red");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+					}
+
+		}
+}
+void DrawMap(){
+	int i,j;
+	for(i=0;i<10;i++){
+		for(j=0;j<20;j++){
+			DrawBox(1+i*xiangsu,1+j*xiangsu,xiangsu,xiangsu);
+		}
+	}
+}
 
 void BlockInit(){
 	srand((int)time(0)); 
-	int t=rand()%7;
-	DrawBlock(t,0,1,5);
+	int t=int(rand())%7;
+	DrawBlock(t,0,4,19);
 }
 
 void MAINGAME(){
-	registerKeyboardEvent(KeyboardEventProcess);/*×¢²á¼üÅÌÏûÏ¢»Øµ÷º¯Êı*/
-	registerTimerEvent(TimerEventProcess);/*×¢²á¶¨Ê±Æ÷ÏûÏ¢»Øµ÷º¯Êı*/
-	startTimer(TIMER_BLINK500, mseconds500);/*500ms¶¨Ê±Æ÷´¥·¢*/
-    startTimer(TIMER_BLINK1000, mseconds1000);/*1000ms¶¨Ê±Æ÷´¥·¢*/
+	registerKeyboardEvent(KeyboardEventProcess);/*Ã—Â¢Â²Ã¡Â¼Ã¼Ã…ÃŒÃÃ»ÃÂ¢Â»Ã˜ÂµÃ·ÂºÂ¯ÃŠÃ½*/
+	registerTimerEvent(TimerEventProcess);/*Ã—Â¢Â²Ã¡Â¶Â¨ÃŠÂ±Ã†Ã·ÃÃ»ÃÂ¢Â»Ã˜ÂµÃ·ÂºÂ¯ÃŠÃ½*/
+	startTimer(TIMER_BLINK500, mseconds500);/*500msÂ¶Â¨ÃŠÂ±Ã†Ã·Â´Â¥Â·Â¢*/
+    startTimer(TIMER_BLINK1000, mseconds1000);/*1000msÂ¶Â¨ÃŠÂ±Ã†Ã·Â´Â¥Â·Â¢*/
 } 
 
 void KeyboardEventProcess(int key, int event)
 {
-	uiGetKeyboard(key,event); // GUI»ñÈ¡¼üÅÌ
+	uiGetKeyboard(key,event); // GUIÂ»Ã±ÃˆÂ¡Â¼Ã¼Ã…ÃŒ
 		switch (event) {
 	 	case KEY_DOWN:
 			 switch (key) {
-			     case VK_SPACE:/*Ğı×ª*/
+			     case VK_SPACE:/*ÃÃ½Ã—Âª*/
 
                      break;
 			     case VK_DOWN:
@@ -66,7 +111,7 @@ void KeyboardEventProcess(int key, int event)
 					 SetEraseMode(FALSE);
                      DrawCenteredCircle(ccx, ccy, radius);
                      break;
-			     case VK_P://ÔİÍ£// 
+			     case VK_P://Ã”ÃÃÂ£// 
   					 SetEraseMode(TRUE);
                      DrawCenteredCircle(ccx, ccy, radius);
 		 	         SetPenSize(GetPenSize()+1);
@@ -80,7 +125,7 @@ void KeyboardEventProcess(int key, int event)
 		case KEY_UP:
 			 break;
 	 }	 
-	display(); // Ë¢ĞÂÏÔÊ¾
+	display(); // Ã‹Â¢ÃÃ‚ÃÃ”ÃŠÂ¾
 }
 
 void TimerEventProcess(int timerID)
@@ -88,14 +133,14 @@ void TimerEventProcess(int timerID)
       bool erasemode;
 
 	  switch (timerID) {
-	    case TIMER_BLINK500: /*500ms¹â±êÉÁË¸¶¨Ê±Æ÷*/
+	    case TIMER_BLINK500: /*500msÂ¹Ã¢Â±ÃªÃ‰ÃÃ‹Â¸Â¶Â¨ÃŠÂ±Ã†Ã·*/
 	      erasemode = GetEraseMode();
 		  SetEraseMode(isDisplayCircle);
           DrawCenteredCircle(ccx, ccy, radius);
 	      SetEraseMode(erasemode);
 		  isDisplayCircle = !isDisplayCircle;
 		  break;
-	    case TIMER_BLINK1000: /*1000ms¹â±êÉÁË¸¶¨Ê±Æ÷*/
+	    case TIMER_BLINK1000: /*1000msÂ¹Ã¢Â±ÃªÃ‰ÃÃ‹Â¸Â¶Â¨ÃŠÂ±Ã†Ã·*/
 	      erasemode = GetEraseMode();
 		  SetEraseMode(isDisplayCircle2);
           DrawCenteredCircle(ccx, ccy, radius*2);
@@ -109,26 +154,27 @@ void TimerEventProcess(int timerID)
 
 void display()
 {
-	// ÇåÆÁ
+	// Ã‡Ã¥Ã†Ã
 	DisplayClear();
 
 #if defined(DEMO_MENU)
-	// »æÖÆºÍ´¦Àí²Ëµ¥
+	// Â»Ã¦Ã–Ã†ÂºÃÂ´Â¦Ã€Ã­Â²Ã‹ÂµÂ¥
 	drawMenu();
 #endif
 
 #if defined(DEMO_ROTATE)
-	// Ğı×ªµÄÈı½ÇĞÎ
+	// ÃÃ½Ã—ÂªÂµÃ„ÃˆÃ½Â½Ã‡ÃÃ
 	drawRotateTriangle();
 #endif
 			
 #if defined(DEMO_BUTTON)
-	// °´Å¥
+	// Â°Â´Ã…Â¥
 	drawButtons();
 #endif
 
 #if defined(DEMO_EDITBOX)
-	// ±à¼­ÎÄ±¾×Ö·û´®
+	// Â±Ã Â¼Â­ÃÃ„Â±Â¾Ã—Ã–Â·Ã»Â´Â®
 	drawEditText();
 #endif
 }
+
