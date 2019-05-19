@@ -19,14 +19,17 @@
 #define TIMER_BLINK500  1     /*500ms¶¨Ê±Æ÷ÊÂ¼þ±êÖ¾ºÅ*/
 #define TIMER_BLINK1000 2     /*1000ms¶¨Ê±Æ÷Ê±¼ä±êÖ¾ºÅ*/
 #define xiangsu 0.2
+int block[10][20];//初始化为0代表空白，，1，2，3，4，5，6，7，代表不同颜色
+int newblock;//用于存储下一个方块的a类型
+int indexx,indexy;//储存当前指示格
 
 
 void KeyboardEventProcess(int key, int event);
 void TimerEventProcess(int timerID);/*¶¨Ê±Æ÷ÏûÏ¢»Øµ÷º¯Êý*/
 
 void BlockMove(int direction);
-void FillaBlock(int x,int y,int color);
-void DrawBlock(int a,int b,int x,int y){
+
+/*void DrawBlock(int a,int b,int x,int y){
 switch(a){
 	case 0: SetPenColor("Blue");
 			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -47,6 +50,7 @@ switch(a){
 						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						break;
 					}
+			break;
 	case 2: SetPenColor("Red");
 			switch(b): {
 				case 0:	drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -56,11 +60,96 @@ switch(a){
 						break;
 				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
-						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
-						drawRectangle((x-1)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						break;
 					}
-
+	case 3: SetPenColor("Green");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-2)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						break;
+					}
+			break;
+	case 4: SetPenColor("Brown");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 2: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-2)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 3: drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;			
+					}
+		break;
+		case 5: SetPenColor("Orange");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 2: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-2)*xiangsu,(y1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 3: drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x)*xiangsu,(y)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						break;			
+					}
+		break;
+		case 6: SetPenColor("Cyan");
+			switch(b): {
+				case 0:	drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x+1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 1: drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 2: drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-2)*xiangsu,(y)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						break;
+				case 3: drawRectangle((x)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x-1)*xiangsu,(y)*xiangsu,xiangsu,xiangsu,1);
+						drawRectangle((x)*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
+						break;			
+					}
+		break;					
 		}
 }
 void DrawMap(){
@@ -70,12 +159,12 @@ void DrawMap(){
 			DrawBox(1+i*xiangsu,1+j*xiangsu,xiangsu,xiangsu);
 		}
 	}
-}
+}*/
 
 void BlockInit(){
 	srand((int)time(0)); 
 	int t=int(rand())%7;
-	DrawBlock(t,0,4,19);
+	newblock=t;
 }
 
 void MAINGAME(){
@@ -177,4 +266,3 @@ void display()
 	drawEditText();
 #endif
 }
-
