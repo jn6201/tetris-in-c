@@ -22,88 +22,86 @@
 #define DEMO_ROTATE
 #define DEMO_EDITBOX
 
-static double winwidth, winheight;   // ´°¿Ú³ß´ç
-static float  rot_angle = 0;         // Èı½ÇĞÎĞı×ª½Ç¶È
-static int    enable_rotation = 1;   // ÔÊĞíĞı×ª
-static int    show_more_buttons = 0; // ÏÔÊ¾¸ü¶à°´Å¥
+static double winwidth, winheight;   // çª—å£å°ºå¯¸
+static int    show_more_buttons = 0; // æ˜¾ç¤ºæ›´å¤šæŒ‰é’®
 
-// ÇåÆÁº¯Êı£¬provided in libgraphics
+// æ¸…å±å‡½æ•°ï¼Œprovided in libgraphics
 void DisplayClear(void); 
-// ¼ÆÊ±Æ÷Æô¶¯º¯Êı£¬provided in libgraphics
+// è®¡æ—¶å™¨å¯åŠ¨å‡½æ•°ï¼Œprovided in libgraphics
 void startTimer(int id,int timeinterval);
 
-// ÓÃ»§µÄÏÔÊ¾º¯Êı
+// ç”¨æˆ·çš„æ˜¾ç¤ºå‡½æ•°
 void display(void); 
 
-// ÓÃ»§µÄ×Ö·ûÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„å­—ç¬¦äº‹ä»¶å“åº”å‡½æ•°
 void CharEventProcess(char ch)
 {
-	uiGetChar(ch); // GUI×Ö·ûÊäÈë
-	display(); //Ë¢ĞÂÏÔÊ¾
+	uiGetChar(ch); // GUIå­—ç¬¦è¾“å…¥
+	display(); //åˆ·æ–°æ˜¾ç¤º
 }
 
-// ÓÃ»§µÄ¼üÅÌÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„é”®ç›˜äº‹ä»¶å“åº”å‡½æ•°
 void KeyboardEventProcess(int key, int event)
 {
-	uiGetKeyboard(key,event); // GUI»ñÈ¡¼üÅÌ
-	display(); // Ë¢ĞÂÏÔÊ¾
+	uiGetKeyboard(key,event); // GUIè·å–é”®ç›˜
+	display(); // åˆ·æ–°æ˜¾ç¤º
 }
 
-// ÓÃ»§µÄÊó±êÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„é¼ æ ‡äº‹ä»¶å“åº”å‡½æ•°
 void MouseEventProcess(int x, int y, int button, int event)
 {
-	uiGetMouse(x,y,button,event); //GUI»ñÈ¡Êó±ê
-	display(); // Ë¢ĞÂÏÔÊ¾
+	uiGetMouse(x,y,button,event); //GUIè·å–é¼ æ ‡
+	display(); // åˆ·æ–°æ˜¾ç¤º
 }
 
-// Ğı×ª¼ÆÊ±Æ÷
+// æ—‹è½¬è®¡æ—¶å™¨
 #define MY_ROTATE_TIMER  1
 
-// ÓÃ»§µÄ¼ÆÊ±Æ÷Ê±¼äÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„è®¡æ—¶å™¨æ—¶é—´å“åº”å‡½æ•°
 void TimerEventProcess(int timerID)
 {
 	if( timerID==MY_ROTATE_TIMER && enable_rotation ) 
 	{
-		rot_angle += 10; // È«¾Ö±äÁ¿
-		display(); // Ë¢ĞÂÏÔÊ¾
+		rot_angle += 10; // å…¨å±€å˜é‡
+		display(); // åˆ·æ–°æ˜¾ç¤º
 	}
 }
 
-// ÓÃ»§Ö÷³ÌĞòÈë¿Ú
-// ½ö³õÊ¼»¯Ö´ĞĞÒ»´Î
+// ç”¨æˆ·ä¸»ç¨‹åºå…¥å£
+// ä»…åˆå§‹åŒ–æ‰§è¡Œä¸€æ¬¡
 void Main() 
 {
-	// ³õÊ¼»¯´°¿ÚºÍÍ¼ĞÎÏµÍ³
-	SetWindowTitle("¶íÂŞË¹·½¿é");
-	//SetWindowSize(10, 10); // µ¥Î» - Ó¢´ç
+	// åˆå§‹åŒ–çª—å£å’Œå›¾å½¢ç³»ç»Ÿ
+	SetWindowTitle("ä¿„ç½—æ–¯æ–¹å—");
+	//SetWindowSize(10, 10); // å•ä½ - è‹±å¯¸
 	//SetWindowSize(15, 10);
-	//SetWindowSize(10, 20);  // Èç¹ûÆÁÄ»³ß´ç²»¹»£¬Ôò°´±ÈÀıËõĞ¡
+	//SetWindowSize(10, 20);  // å¦‚æœå±å¹•å°ºå¯¸ä¸å¤Ÿï¼Œåˆ™æŒ‰æ¯”ä¾‹ç¼©å°
     InitGraphics();
 
-	// »ñµÃ´°¿Ú³ß´ç
+	// è·å¾—çª—å£å°ºå¯¸
     winwidth = GetWindowWidth();
     winheight = GetWindowHeight();
 
-	// ×¢²áÊ±¼äÏìÓ¦º¯Êı
-	registerCharEvent(CharEventProcess); // ×Ö·û
-	registerKeyboardEvent(KeyboardEventProcess);// ¼üÅÌ
-	registerMouseEvent(MouseEventProcess);      // Êó±ê
-	registerTimerEvent(TimerEventProcess);      // ¶¨Ê±Æ÷
+	// æ³¨å†Œæ—¶é—´å“åº”å‡½æ•°
+	registerCharEvent(CharEventProcess); // å­—ç¬¦
+	registerKeyboardEvent(KeyboardEventProcess);// é”®ç›˜
+	registerMouseEvent(MouseEventProcess);      // é¼ æ ‡
+	registerTimerEvent(TimerEventProcess);      // å®šæ—¶å™¨
 
-	// ¿ªÆô¶¨Ê±Æ÷
+	// å¼€å¯å®šæ—¶å™¨
 	startTimer(MY_ROTATE_TIMER, 50);            
 
-	// ´ò¿ª¿ØÖÆÌ¨£¬·½±ãÊä³ö±äÁ¿ĞÅÏ¢£¬±ãÓÚµ÷ÊÔ
+	// æ‰“å¼€æ§åˆ¶å°ï¼Œæ–¹ä¾¿è¾“å‡ºå˜é‡ä¿¡æ¯ï¼Œä¾¿äºè°ƒè¯•
 	// InitConsole(); 
 
 }
 
 #if defined(DEMO_MENU)
-// ²Ëµ¥ÑİÊ¾³ÌĞò
+// èœå•æ¼”ç¤ºç¨‹åº
 void drawMenu()
 { 
 	static char * menuListFile[] = {"File",  
-		"Open  | Ctrl-O", // ¿ì½İ¼ü±ØĞë²ÉÓÃ[Ctrl-X]¸ñÊ½£¬·ÅÔÚ×Ö·û´®µÄ½áÎ²
+		"Open  | Ctrl-O", // å¿«æ·é”®å¿…é¡»é‡‡ç”¨[Ctrl-X]æ ¼å¼ï¼Œæ”¾åœ¨å­—ç¬¦ä¸²çš„ç»“å°¾
 		"Close",
 		"Exit   | Ctrl-E"};
 	static char * menuListTool[] = {"Tool",
@@ -118,28 +116,28 @@ void drawMenu()
 	double fH = GetFontHeight();
 	double x = 0; //fH/8;
 	double y = winheight;
-	double h = fH*1.5; // ¿Ø¼ş¸ß¶È
-	double w = TextStringWidth(menuListHelp[0])*2; // ¿Ø¼ş¿í¶È
+	double h = fH*1.5; // æ§ä»¶é«˜åº¦
+	double w = TextStringWidth(menuListHelp[0])*2; // æ§ä»¶å®½åº¦
 	double wlist = TextStringWidth(menuListTool[3])*1.2;
-	double xindent = winheight/20; // Ëõ½ø
+	double xindent = winheight/20; // ç¼©è¿›
 	int    selection;
 	
 	// menu bar
 	drawMenuBar(0,y-h,winwidth,h);
-	// File ²Ëµ¥
+	// File èœå•
 	selection = menuList(GenUIID(0), x, y-h, w, wlist, h, menuListFile, sizeof(menuListFile)/sizeof(menuListFile[0]));
 	if( selection>0 ) selectedLabel = menuListFile[selection];
 	if( selection==3 )
 		exit(-1); // choose to exit
 	
-	// Tool ²Ëµ¥
+	// Tool èœå•
 	menuListTool[3] = enable_rotation ? "Stop Rotation | Ctrl-T" : "Start Rotation | Ctrl-T";
 	selection = menuList(GenUIID(0),x+w,  y-h, w, wlist,h, menuListTool,sizeof(menuListTool)/sizeof(menuListTool[0]));
 	if( selection>0 ) selectedLabel = menuListTool[selection];
 	if( selection==3 )
 		enable_rotation = ! enable_rotation;
 	
-	// Help ²Ëµ¥
+	// Help èœå•
 	menuListHelp[1] = show_more_buttons ? "Show Less | Ctrl-M" : "Show More | Ctrl-M";
 	selection = menuList(GenUIID(0),x+2*w,y-h, w, wlist, h, menuListHelp,sizeof(menuListHelp)/sizeof(menuListHelp[0]));
 	if( selection>0 ) selectedLabel = menuListHelp[selection];
@@ -149,34 +147,34 @@ void drawMenu()
 #endif // #if defined(DEMO_MENU)
 
 #if defined(DEMO_BUTTON)
-// °´Å¥ÑİÊ¾³ÌĞò
+// æŒ‰é’®æ¼”ç¤ºç¨‹åº
 void drawButtons()
 {
 	double fH = GetFontHeight();
-	double h = fH*2;  // ¿Ø¼ş¸ß¶È
+	double h = fH*2;  // æ§ä»¶é«˜åº¦
 	double x = winwidth/2.5;  
 	double y = winheight/2+3*h; 
-	double w = winwidth/5; // ¿Ø¼ş¿í¶È
+	double w = winwidth/5; // æ§ä»¶å®½åº¦
 	
-	if( button(GenUIID(0), x, y, w, h, "ĞÂÓÎÏ·") )   //ĞÂÓÎÏ·°´Å¥ 
+	if( button(GenUIID(0), x, y, w, h, "æ–°æ¸¸æˆ") )   //æ–°æ¸¸æˆæŒ‰é’® 
 		{	
 			  
 			   
 		}
 		
-	if( button(GenUIID(0), x, y-3*h, w, h, "¶ÁÈ¡´æµµ") )  //¶ÁÈ¡´æµµ°´Å¥ 
+	if( button(GenUIID(0), x, y-3*h, w, h, "è¯»å–å­˜æ¡£") )  //è¯»å–å­˜æ¡£æŒ‰é’® 
 		{	
 			   
 			   
 		}
 		
-	if( button(GenUIID(0), x, y-6*h, w, h, "ÅÅĞĞ°ñ") )  //ÅÅĞĞ°ñ°´Å¥ 
+	if( button(GenUIID(0), x, y-6*h, w, h, "æ’è¡Œæ¦œ") )  //æ’è¡Œæ¦œæŒ‰é’® 
 		{	
 			   
 			   
 		}
 		
-	if( button(GenUIID(0), x, y-9*h, w, h, "ÍË³ö") )  //ÍË³öÓÎÏ· 
+	if( button(GenUIID(0), x, y-9*h, w, h, "é€€å‡º") )  //é€€å‡ºæ¸¸æˆ 
 		{	
 			exit(-1); 	   
 		}
@@ -185,21 +183,21 @@ void drawButtons()
 
 void display()
 {
-	// ÇåÆÁ
+	// æ¸…å±
 	DisplayClear();
 
 #if defined(DEMO_MENU)
-	// »æÖÆºÍ´¦Àí²Ëµ¥
+	// ç»˜åˆ¶å’Œå¤„ç†èœå•
 	drawMenu();
 #endif
 
 
 #if defined(DEMO_BUTTON)
-	// °´Å¥
+	// æŒ‰é’®
 	drawButtons();
 #endif
 
 
-	// ½«»æÖÆµÄ½á¹ûputµ½ÆÁÄ»ÉÏ
+	// å°†ç»˜åˆ¶çš„ç»“æœputåˆ°å±å¹•ä¸Š
 	//UpdateDisplay();
 }
