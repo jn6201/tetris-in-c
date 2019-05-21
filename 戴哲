@@ -1,0 +1,9 @@
+main.c（主界面）
+1.主界面：新游戏、读取存档、排行榜、退出
+2.菜单栏：（1）File：重新开始(restart)、保存游戏(save)、退出（exit)
+           (2)Toll:暂停（pause）、速度加快（speed-up）、速度减慢（speed-down）
+           (3)Help:About(对游戏的介绍）
+pause.c（暂停界面）
+1.继续
+2.读取存档
+3.退出
