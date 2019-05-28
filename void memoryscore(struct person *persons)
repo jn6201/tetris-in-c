@@ -6,11 +6,11 @@ struct person{
 	int score;
 	char string[32];
 };
-int i=0;
+int num=0;
 /*创建文件并输入成绩*/ 
 void memoryscore(struct person *persons){
 	FILE *fp;
-		if(i=0){
+		if(num=0){
 	  if((fp=fopen("./file.txt","w"))==NULL){
 		printf("\n open file Fail,close!");
 		getchar();
