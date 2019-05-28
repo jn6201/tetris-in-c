@@ -22,63 +22,66 @@
 #define DEMO_ROTATE
 #define DEMO_EDITBOX
 
-static double winwidth, winheight;   // ´°¿Ú³ß´ç
-static int    show_more_buttons = 0; // ÏÔÊ¾¸ü¶à°´Å¥
+static double winwidth, winheight;   // çª—å£å°ºå¯¸
+static int    show_more_buttons = 0; // æ˜¾ç¤ºæ›´å¤šæŒ‰é’®
 
-// ÇåÆÁº¯Êı£¬provided in libgraphics
+// æ¸…å±å‡½æ•°ï¼Œprovided in libgraphics
 void DisplayClear(void); 
-// ¼ÆÊ±Æ÷Æô¶¯º¯Êı£¬provided in libgraphics
+// è®¡æ—¶å™¨å¯åŠ¨å‡½æ•°ï¼Œprovided in libgraphics
 void startTimer(int id,int timeinterval);
 
-// ÓÃ»§µÄÏÔÊ¾º¯Êı
+// ç”¨æˆ·çš„æ˜¾ç¤ºå‡½æ•°
 void display(void); 
 
-// ÓÃ»§µÄ×Ö·ûÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„å­—ç¬¦äº‹ä»¶å“åº”å‡½æ•°
 void CharEventProcess(char ch)
 {
-	uiGetChar(ch); // GUI×Ö·ûÊäÈë
-	display(); //Ë¢ĞÂÏÔÊ¾
+	uiGetChar(ch); // GUIå­—ç¬¦è¾“å…¥
+	display(); //åˆ·æ–°æ˜¾ç¤º
 }
 
-// ÓÃ»§µÄ¼üÅÌÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„é”®ç›˜äº‹ä»¶å“åº”å‡½æ•°
 void KeyboardEventProcess(int key, int event)
 {
-	uiGetKeyboard(key,event); // GUI»ñÈ¡¼üÅÌ
-	display(); // Ë¢ĞÂÏÔÊ¾
+	uiGetKeyboard(key,event); // GUIè·å–é”®ç›˜
+	display(); // åˆ·æ–°æ˜¾ç¤º
 }
 
-// ÓÃ»§µÄÊó±êÊÂ¼şÏìÓ¦º¯Êı
+// ç”¨æˆ·çš„é¼ æ ‡äº‹ä»¶å“åº”å‡½æ•°
 void MouseEventProcess(int x, int y, int button, int event)
 {
-	uiGetMouse(x,y,button,event); //GUI»ñÈ¡Êó±ê
-	display(); // Ë¢ĞÂÏÔÊ¾
+	uiGetMouse(x,y,button,event); //GUIè·å–é¼ æ ‡
+	display(); // åˆ·æ–°æ˜¾ç¤º
 }
 
-//ÓÎÏ·²Ù×÷º¯Êı 
-void Start_game();   //¿ªÊ¼ÓÎÏ· 
-void ranking_list();//ÏÔÊ¾ÅÅĞĞ°ñ 
-void ReadArchiving();//¶ÁÈ¡´æµµ 
-void Save_game();//±£´æÓÎÏ· 
-void Pause_game();//ÔİÍ£ÓÎÏ· 
-void Resume_game();//»Ö¸´ÓÎÏ· 
-void ShowHelp();//ÏÔÊ¾°ïÖú 
-void ShowHAbout();//ÏÔÊ¾¹ØÓÚ 
+//æ¸¸æˆæ“ä½œå‡½æ•° 
+void Start_game();   //å¼€å§‹æ¸¸æˆ 
+void ranking_list();//æ˜¾ç¤ºæ’è¡Œæ¦œ 
+void ReadArchiving();//è¯»å–å­˜æ¡£ 
+void Save_game();//ä¿å­˜æ¸¸æˆ 
+void Pause_game();//æš‚åœæ¸¸æˆ 
+void Resume_game();//æ¢å¤æ¸¸æˆ 
+ 
+void ShowHelp();//æ˜¾ç¤ºå¸®åŠ© 
+void ShowHAbout();//æ˜¾ç¤ºå…³äº 
 
-
+void KeyboardEventProcess1(int key, int event);
 void TimerEventProcess(int timerID);
-void prefunction();//Ô¤´¦Àí£¬Ã¿´ÎË¢ĞÂÊ±µÚÒ»²½×¢²áºÚÉ«±ß¿ò
-void BlockMove(int direction);//°Ñµ±Ç°»î¶¯·½¿éÒÆ¶¯Ò»¸ñ
-int isblock(int a,int b,int x,int y);//ÅĞ¶ÏxyÖĞĞÄÎ»ÖÃÄÜ·ñ·ÅÏÂ Ò»¸öabĞÍ·½¿é
-void clean();//Çå³ıµ±Ç°»î¶¯·½¿é
-void drawblock(int a,int b,int x,int y);//ÔÚxyÖĞĞÄÎ»ÖÃ»æÖÆÒ»¸öabĞÍ·½¿é
-void BlockInit();//Ëæ»úÉú³ÉÏÂÒ»¸ö·½¿éµÄaĞÍ
-void blockicy();//¶³½áµ±Ç°»î¶¯·½¿é
-void blcokdecline();//ÏûÃğÂúµÄĞĞ
-void finaldraw();//½«Êı×éĞÎÊ½×îÖÕ±à³ÌÍ¼°¸
-int block[12][22];//³õÊ¼»¯Îª0´ú±í¿Õ°×£¬£¬1£¬2£¬3£¬4£¬5£¬6£¬7£¬´ú±í²»Í¬ÑÕÉ«
-int newblock;//ÓÃÓÚ´æ´¢ÏÂÒ»¸ö·½¿éµÄaÀàĞÍ
-int indexx,indexy;//´¢´æµ±Ç°Ö¸Ê¾¸ñ
-int indexa,indexb;//´¢´æµ±Ç°Ö¸Ê¾ÀàĞÍ
-int ms;//´¢´æÊ±¼ä¼ä¸ô
+void prefunction();//é¢„å¤„ç†ï¼Œæ¯æ¬¡åˆ·æ–°æ—¶ç¬¬ä¸€æ­¥æ³¨å†Œé»‘è‰²è¾¹æ¡†
+void BlockMove(int direction);//æŠŠå½“å‰æ´»åŠ¨æ–¹å—ç§»åŠ¨ä¸€æ ¼
+int isblock(int a,int b,int x,int y);//åˆ¤æ–­xyä¸­å¿ƒä½ç½®èƒ½å¦æ”¾ä¸‹ ä¸€ä¸ªabå‹æ–¹å—
+void clean();//æ¸…é™¤å½“å‰æ´»åŠ¨æ–¹å—
+void drawblock(int a,int b,int x,int y);//åœ¨xyä¸­å¿ƒä½ç½®ç»˜åˆ¶ä¸€ä¸ªabå‹æ–¹å—
+int BlockInit();//éšæœºç”Ÿæˆä¸‹ä¸€ä¸ªæ–¹å—çš„aå‹
+void blockicy();//å†»ç»“å½“å‰æ´»åŠ¨æ–¹å—
+void blcokdecline();//æ¶ˆç­æ»¡çš„è¡Œ
+void finaldraw();//å°†æ•°ç»„å½¢å¼æœ€ç»ˆç¼–ç¨‹å›¾æ¡ˆ
+void pause();//æš‚åœ 
+void carryon();//ç»§ç»­ 
+int block[12][22];//åˆå§‹åŒ–ä¸º0ä»£è¡¨ç©ºç™½ï¼Œï¼Œ1ï¼Œ2ï¼Œ3ï¼Œ4ï¼Œ5ï¼Œ6ï¼Œ7ï¼Œä»£è¡¨ä¸åŒé¢œè‰²
+int newblock;//ç”¨äºå­˜å‚¨ä¸‹ä¸€ä¸ªæ–¹å—çš„aç±»å‹
+int indexx,indexy;//å‚¨å­˜å½“å‰æŒ‡ç¤ºæ ¼
+int indexa,indexb;//å‚¨å­˜å½“å‰æŒ‡ç¤ºç±»å‹
+int ms;//å‚¨å­˜æ—¶é—´é—´éš”
 int score;//
-
+int isgame;//0è¡¨ç¤ºç»“æŸï¼Œ1è¡¨ç¤ºè¿›è¡Œä¸­ï¼Œ2è¡¨ç¤ºæš‚åœ 
