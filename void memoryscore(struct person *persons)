@@ -8,7 +8,7 @@ struct person{
 };
 int num=0;
 /*创建文件并输入成绩*/ 
-void memoryscore(struct person *persons){
+void memoryscore(struct person *persons,int score){
 	FILE *fp;
 		if(num=0){
 	  if((fp=fopen("./file.txt","w"))==NULL){
@@ -24,10 +24,12 @@ void memoryscore(struct person *persons){
 		exit(1);
 	   }
     }
-	itoa(persons[i].score,persons[i].string,10);
-	fputs(persons[i].name,fp);
+        persons[num].score=score;
+	itoa(persons[num].score,persons[num].string,10);
+	scanf("%s",persons[num].name);
+	fputs(persons[num].name,fp);
 	fputc('\n',fp);
-	fputs(persons[i].string,fp);
+	fputs(persons[num].string,fp);
 	fputc('\n',fp);
 	fclose(fp);
 }
