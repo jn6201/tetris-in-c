@@ -296,7 +296,12 @@ void KeyboardEventProcess1(int key, int event)
 			 		}
                      break;
 			     case VK_DOWN:
-					 ms=200;
+					 if(isblock(indexa,indexb,indexx,indexy-1)==1){
+			         	clean();
+			         	indexy--;
+			         	drawblock(indexa,indexb,indexx,indexy);
+			         	display();
+			         }
                      break;
 			     case VK_LEFT:
 			         if(isblock(indexa,indexb,indexx-1,indexy)==1){
