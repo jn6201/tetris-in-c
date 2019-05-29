@@ -3,11 +3,6 @@
 #define TIMER  1     
 
 #define xiangsu 0.2
-int block[12][22];//初始化为0代表空白，，1，2，3，4，5，6，7，代表不同颜色
-int newblock;//用于存储下一个方块的a类型
-int indexx,indexy;//储存当前指示格
-int indexa,indexb;//储存当前指示类型
-int ms,score;
 
 
 void prefunction(){
@@ -193,22 +188,22 @@ void finaldraw(){
 	for(i=0;i<12;i++){
 		for(j=0;j<22;j++){
 			switch (block[i][j]){
-				case -10:SetPenColor('Black');break;
-				case -1:SetPenColor('Blue');break;
-				case 1:SetPenColor('Blue');break;
-				case -2:SetPenColor('Green');break;
-				case 2:SetPenColor('Green');break;
-				case -3:SetPenColor('Red');break;
-				case 3:SetPenColor('Red');break;
-				case -4:SetPenColor('Orange');break;
-				case 4:SetPenColor('Orange');break;
-				case -5:SetPenColor('Yellow');break;
-				case 5:SetPenColor('Yellow');break;
-				case -6:SetPenColor('Brown');break;
-				case 6:SetPenColor('Brown');break;
-				case -7:SetPenColor('Cyan');break;
-				case 7:SetPenColor('Cyan');break;
-				case 0:SetPenColor('White');break;
+				case -10:SetPenColor("Black");break;
+				case -1:SetPenColor("Blue");break;
+				case 1:SetPenColor("Blue");break;
+				case -2:SetPenColor("Green");break;
+				case 2:SetPenColor("Green");break;
+				case -3:SetPenColor("Red");break;
+				case 3:SetPenColor("Red");break;
+				case -4:SetPenColor("Orange");break;
+				case 4:SetPenColor("Orange");break;
+				case -5:SetPenColor("Yellow");break;
+				case 5:SetPenColor("Yellow");break;
+				case -6:SetPenColor("Brown");break;
+				case 6:SetPenColor("Brown");break;
+				case -7:SetPenColor("Cyan");break;
+				case 7:SetPenColor("Cyan");break;
+				case 0:SetPenColor("White");break;
 				
 			}
 			drawRectangle(i*xiangsu+1,j*xiangsu+1,xiangsu,xiangsu,1);
@@ -276,7 +271,7 @@ void MAINGAME(){
 	newblock=BlockInit();
 	drawblock(BlockInit(),0,indexx,indexy);
 	display();
-	registerKeyboardEvent(KeyboardEventProcess);/*×￠2á?ü?ì???￠??μ÷oˉêy*/
+	registerKeyboardEvent(KeyboardEventProcess1);/*×￠2á?ü?ì???￠??μ÷oˉêy*/
 	registerTimerEvent(TimerEventProcess);/*×￠2á?¨ê±?÷???￠??μ÷oˉêy*/
 	ms=500;//最初速度
 	startTimer(TIMER, ms);/*500ms?¨ê±?÷′￥·￠*/
