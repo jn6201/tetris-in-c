@@ -3,7 +3,13 @@
 #define TIMER  1     
 
 #define xiangsu 0.2
-
+int block[12][22];//初始化为0代表空白，，1，2，3，4，5，6，7，代表不同颜色
+int newblock;//用于存储下一个方块的a类型
+int indexx,indexy;//储存当前指示格
+int indexa,indexb;//储存当前指示类型
+int ms;//储存时间间隔
+int score;//
+int isgame=0;//0表示结束，1表示进行中，2表示暂停 
 
 void prefunction(){
 	int i,j;
@@ -34,56 +40,56 @@ void BlockMove(int direction){
 	}
 }
 int isblock(int a,int b,int x,int y){
-	if(block[x][y]<=0)return 0;
+	if(block[x][y]<0)return 0;
 	switch(a){
-		case 1: if(block[x][y-1]<=0||block[x-1][y]<=0||block[x-1][y-1]<=0)return 0;
+		case 1: if(block[x][y-1]<0||block[x-1][y]<0||block[x-1][y-1]<0)return 0;
 				break;
 		case 2: switch(b){
-			case 0:case 2: if(block[x][y+1]<=0||block[x+1][y]<=0||block[x+1][y-1]<=0)return 0;
+			case 0:case 2: if(block[x][y+1]<0||block[x+1][y]<0||block[x+1][y-1]<0)return 0;
 				break;
-			case 1:case 3: if(block[x][y-1]<=0||block[x-1][y-1]<=0||block[x+1][y]<=0)return 0;
+			case 1:case 3: if(block[x][y-1]<0||block[x-1][y-1]<0||block[x+1][y]<0)return 0;
 				break;
 		}break;
 		case 3: switch(b){
-			case 0:case 2: if(block[x-1][y]<=0||block[x][y+1]<=0||block[x-1][y-1]<=0)return 0;
+			case 0:case 2: if(block[x-1][y]<0||block[x][y+1]<0||block[x-1][y-1]<0)return 0;
 				break;
-			case 1:case 3: if(block[x-1][y]<=0||block[x][y-1]<=0||block[x+1][y-1]<=0)return 0;
+			case 1:case 3: if(block[x-1][y]<0||block[x][y-1]<0||block[x+1][y-1]<0)return 0;
 				break;
 		}break;
 		case 4: switch(b){
-			case 0:case 2: if(block[x][y+1]<=0||block[x][y-1]<=0||block[x][y-2]<=0)return 0;
+			case 0:case 2: if(block[x][y+1]<0||block[x][y-1]<0||block[x][y-2]<0)return 0;
 				break;
-			case 1:case 3: if(block[x+1][y]<=0||block[x-1][y]<=0||block[x-2][y]<=0)return 0;
+			case 1:case 3: if(block[x+1][y]<0||block[x-1][y]<0||block[x-2][y]<0)return 0;
 				break;
 		}break;
 		case 5: switch(b){
-			case 0: if(block[x-1][y]<=0||block[x+1][y]<=0||block[x+2][y]<=0)return 0;
+			case 0: if(block[x-1][y]<0||block[x+1][y]<0||block[x-1][y-1]<0)return 0;
 				break;
-			case 1: if(block[x][y-1]<=0||block[x-1][y]<=0||block[x][y-2]<=0)return 0;
+			case 1: if(block[x][y-1]<0||block[x-1][y]<0||block[x][y-2]<0)return 0;
 				break;
-			case 2: if(block[x][y-1]<=0||block[x-1][y-1]<=0||block[x-2][y-1]<=0)return 0;
+			case 2: if(block[x][y-1]<0||block[x-1][y-1]<0||block[x-2][y-1]<0)return 0;
 				break;
-			case 3: if(block[x][y+1]<=0||block[x][y-1]<=0||block[x+1][y-1]<=0)return 0;
+			case 3: if(block[x][y+1]<0||block[x][y-1]<0||block[x+1][y-1]<0)return 0;
 				break;
 		}
 		case 6: switch(b){
-			case 0: if(block[x+1][y]<=0||block[x-1][y]<=0||block[x-1][y+1]<=0)return 0;
+			case 0: if(block[x+1][y]<0||block[x-1][y]<0||block[x-1][y+1]<0)return 0;
 				break;
-			case 1: if(block[x][y-1]<=0||block[x][y+1]<=0||block[x+1][y+1]<=0)return 0;
+			case 1: if(block[x][y-1]<0||block[x][y+1]<0||block[x+1][y+1]<0)return 0;
 				break;
-			case 2: if(block[x-1][y]<=0||block[x+1][y]<=0||block[x+1][y+1]<=0)return 0;
+			case 2: if(block[x-1][y]<0||block[x+1][y]<0||block[x+1][y+1]<0)return 0;
 				break;
-			case 3: if(block[x][y+1]<=0||block[x][y-1]<=0||block[x-1][y-1]<=0)return 0;
+			case 3: if(block[x][y+1]<0||block[x][y-1]<0||block[x-1][y-1]<0)return 0;
 				break;
 		}break;
 		case 7: switch(b){
-			case 0: if(block[x-1][y]<=0||block[x+1][y]<=0||block[x][y+1]<=0)return 0;
+			case 0: if(block[x-1][y]<0||block[x+1][y]<0||block[x][y+1]<0)return 0;
 				break;
-			case 1: if(block[x+1][y]<=0||block[x][y+1]<=0||block[x][y-1]<=0)return 0;
+			case 1: if(block[x+1][y]<0||block[x][y+1]<0||block[x][y-1]<0)return 0;
 				break;
-			case 2: if(block[x][y-1]<=0||block[x+1][y]<=0||block[x-1][y]<=0)return 0;
+			case 2: if(block[x][y-1]<0||block[x+1][y]<0||block[x-1][y]<0)return 0;
 				break;
-			case 3: if(block[x-1][y]<=0||block[x][y+1]<=0||block[x][y-1]<=0)return 0;
+			case 3: if(block[x-1][y]<0||block[x][y+1]<0||block[x][y-1]<0)return 0;
 				break;
 		}break;
 	}
@@ -102,25 +108,25 @@ void drawblock(int a,int b,int x,int y){//前提是isblock=1
 		case 1: block[x][y-1]=block[x-1][y]=block[x-1][y-1]=block[x][y]=1;
 				break;
 		case 2: switch(b){
-			case 0: block[x][y+1]=block[x+1][y]=block[x+1][y-1]=block[x][y]=2;
+			case 0:case 2: block[x][y+1]=block[x+1][y]=block[x+1][y-1]=block[x][y]=2;
 				break;
-			case 1: block[x][y-1]=block[x-1][y-1]=block[x+1][y]=block[x][y]=2;
+			case 1:case 3: block[x][y-1]=block[x-1][y-1]=block[x+1][y]=block[x][y]=2;
 				break;
 		}break;
 		case 3: switch(b){
-			case 0: block[x-1][y]=block[x][y+1]=block[x-1][y-1]=block[x][y]=3;
+			case 0:case 2: block[x-1][y]=block[x][y+1]=block[x-1][y-1]=block[x][y]=3;
 				break;
-			case 1: block[x-1][y]=block[x][y-1]=block[x+1][y-1]=block[x][y]=3;
+			case 1:case 3: block[x-1][y]=block[x][y-1]=block[x+1][y-1]=block[x][y]=3;
 				break;
 		}break;
 		case 4: switch(b){
-			case 0: block[x][y+1]=block[x][y-1]=block[x][y-2]=block[x][y]=4;
+			case 0:case 2: block[x][y+1]=block[x][y-1]=block[x][y-2]=block[x][y]=4;
 				break;
-			case 1: block[x+1][y]=block[x-1][y]=block[x-2][y]=block[x][y]=4;
+			case 1:case 3: block[x+1][y]=block[x-1][y]=block[x-2][y]=block[x][y]=4;
 				break;
 		}break;
 		case 5: switch(b){
-			case 0: block[x-1][y]=block[x+1][y]=block[x+2][y]=block[x][y]=5;
+			case 0: block[x-1][y]=block[x+1][y]=block[x-1][y-1]=block[x][y]=5;
 				break;
 			case 1: block[x][y-1]=block[x-1][y]=block[x][y-2]=block[x][y]=5;
 				break;
@@ -168,14 +174,14 @@ void blockicy(){
 		}
 	}
 }
-void blcokdecline(){
-int flag=1,i,j,m,n;
+void blockdecline(){
+int flag,i,j,m,n;
 for(j=1;j<21;j++){
 	flag=1;
 	for(i=1;i<11;i++)if(block[i][j]==0)flag=0;
 	if(flag==1){
 		score++;
-		for(m=j;m<21;m++){
+		for(m=j;m<20;m++){
 			for(n=1;n<11;n++){
 				block[n][m]=block[n][m+1];
 			}
@@ -209,7 +215,7 @@ void finaldraw(){
 			drawRectangle(i*xiangsu+1,j*xiangsu+1,xiangsu,xiangsu,1);
 		}
 	}
-	int x=15,y=25;//画旁边的待命方块
+	int x=20,y=25;//画旁边的待命方块
 	switch(newblock){
 	case 1: SetPenColor("Blue");
 			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -217,7 +223,7 @@ void finaldraw(){
 			drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 			drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 			break;
-	case 2: SetPenColor("Yellow");
+	case 2: SetPenColor("Green");
 			drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 			drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
 			drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -231,21 +237,21 @@ void finaldraw(){
 						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						break;
 				
-	case 4: SetPenColor("Green");
+	case 4: SetPenColor("Orange");
 			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle(x*xiangsu,(y-2)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle(x*xiangsu,(y+1)*xiangsu,xiangsu,xiangsu,1);
 						break;
 				
-	case 5: SetPenColor("Brown");
+	case 5: SetPenColor("Yellow");
 			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x+1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
 						break;
 				
-		case 6: SetPenColor("Orange");
+		case 6: SetPenColor("Brown");
 			drawRectangle(x*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x-1)*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -270,19 +276,14 @@ void MAINGAME(){
 	indexy=19;
 	newblock=BlockInit();
 	drawblock(BlockInit(),0,indexx,indexy);
-	display();
-	registerKeyboardEvent(KeyboardEventProcess1);/*×￠2á?ü?ì???￠??μ÷oˉêy*/
-	registerTimerEvent(TimerEventProcess);/*×￠2á?¨ê±?÷???￠??μ÷oˉêy*/
 	ms=500;//最初速度
-	startTimer(TIMER, ms);/*500ms?¨ê±?÷′￥·￠*/
-    
+	startTimer(TIMER, 500);/*500ms?¨ê±?÷′￥·￠*/
 } 
 
 void KeyboardEventProcess1(int key, int event)
 {
 	int tmp;
 	tmp=ms;
-	uiGetKeyboard(key,event); // GUI??è??ü?ì
 		switch (event) {
 	 	case KEY_DOWN:
 			 switch (key) {
@@ -340,7 +341,6 @@ void TimerEventProcess(int timerID)
     		indexa=newblock;
     		indexb=0;
     		newblock=BlockInit();
-    		score++;
     		indexx=6;
     		indexy=19;
     		if(isblock(indexa,indexb,indexx,indexy)==1){
@@ -363,8 +363,3 @@ void pause(){
 void carryon(){
 	if(isgame==2)isgame=1;
 }
-
-
-
-
-
