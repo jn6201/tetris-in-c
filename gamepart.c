@@ -1,8 +1,10 @@
 #include"main.h"
 
 #define TIMER  1     
-
 #define xiangsu 0.2
+
+extern char FooterStr[30];
+
 int block[12][22];//初始化为0代表空白，，1，2，3，4，5，6，7，代表不同颜色
 int newblock;//用于存储下一个方块的a类型
 int indexx,indexy;//储存当前指示格
@@ -65,9 +67,9 @@ int isblock(int a,int b,int x,int y){
 		case 5: switch(b){
 			case 0: if(block[x-1][y]<0||block[x+1][y]<0||block[x-1][y-1]<0)return 0;
 				break;
-			case 1: if(block[x][y-1]<0||block[x-1][y]<0||block[x][y-2]<0)return 0;
+			case 1: if(block[x][y-1]<0||block[x][y+1]<0||block[x-1][y+1]<0)return 0;
 				break;
-			case 2: if(block[x][y-1]<0||block[x-1][y-1]<0||block[x-2][y-1]<0)return 0;
+			case 2: if(block[x+1][y]<0||block[x+1][y+1]<0||block[x-1][y]<0)return 0;
 				break;
 			case 3: if(block[x][y+1]<0||block[x][y-1]<0||block[x+1][y-1]<0)return 0;
 				break;
@@ -128,9 +130,9 @@ void drawblock(int a,int b,int x,int y){//前提是isblock=1
 		case 5: switch(b){
 			case 0: block[x-1][y]=block[x+1][y]=block[x-1][y-1]=block[x][y]=5;
 				break;
-			case 1: block[x][y-1]=block[x-1][y]=block[x][y-2]=block[x][y]=5;
+			case 1: block[x][y-1]=block[x][y+1]=block[x-1][y+1]=block[x][y]=5;
 				break;
-			case 2: block[x][y-1]=block[x-1][y-1]=block[x-2][y-1]=block[x][y]=5;
+			case 2: block[x+1][y]=block[x+1][y+1]=block[x-1][y]=block[x][y]=5;
 				break;
 			case 3: block[x][y+1]=block[x][y-1]=block[x+1][y-1]=block[x][y]=5;
 				break;
@@ -215,7 +217,7 @@ void finaldraw(){
 			drawRectangle(i*xiangsu+1,j*xiangsu+1,xiangsu,xiangsu,1);
 		}
 	}
-	int x=20,y=25;//画旁边的待命方块
+	int x=25,y=25;//画旁边的待命方块
 	switch(newblock){
 	case 1: SetPenColor("Blue");
 			drawRectangle(x*xiangsu,y*xiangsu,xiangsu,xiangsu,1);
@@ -276,8 +278,8 @@ void MAINGAME(){
 	indexy=19;
 	newblock=BlockInit();
 	drawblock(BlockInit(),0,indexx,indexy);
-	ms=500;//最初速度
-	startTimer(TIMER, 500);/*500ms?¨ê±?÷′￥·￠*/
+	ms=400;//最初速度
+	startTimer(TIMER, 400);/*500ms?¨ê±?÷′￥·￠*/
 } 
 
 void KeyboardEventProcess1(int key, int event)
@@ -363,8 +365,14 @@ void TimerEventProcess(int timerID)
 	  
 }
 void pause(){
-	if(isgame==1)isgame=2;
+	if(isgame==1){
+		isgame=2;
+		strcpy(FooterStr, "Pause");
+	}
 }
 void carryon(){
-	if(isgame==2)isgame=1;
+	if(isgame==2){
+		isgame=1;
+		strcpy(FooterStr, "Carry on!");
+	}
 }
