@@ -79,7 +79,7 @@ int isblock(int a,int b,int x,int y){
 				break;
 			case 1: if(block[x][y-1]<0||block[x][y+1]<0||block[x+1][y+1]<0)return 0;
 				break;
-			case 2: if(block[x-1][y]<0||block[x+1][y]<0||block[x+1][y+1]<0)return 0;
+			case 2: if(block[x-1][y]<0||block[x+1][y]<0||block[x+1][y-1]<0)return 0;
 				break;
 			case 3: if(block[x][y+1]<0||block[x][y-1]<0||block[x-1][y-1]<0)return 0;
 				break;
@@ -142,7 +142,7 @@ void drawblock(int a,int b,int x,int y){//前提是isblock=1
 				break;
 			case 1: block[x][y-1]=block[x][y+1]=block[x+1][y+1]=block[x][y]=6;
 				break;
-			case 2: block[x-1][y]=block[x+1][y]=block[x+1][y+1]=block[x][y]=6;
+			case 2: block[x-1][y]=block[x+1][y]=block[x+1][y-1]=block[x][y]=6;
 				break;
 			case 3: block[x][y+1]=block[x][y-1]=block[x-1][y-1]=block[x][y]=6;
 				break;
@@ -187,6 +187,7 @@ for(j=1;j<21;j++){
 			for(n=1;n<11;n++){
 				block[n][m]=block[n][m+1];
 			}
+			if(j>1)j=j-1;
 			}
 		}
 	}
