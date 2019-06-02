@@ -12,6 +12,7 @@ int indexa,indexb;//储存当前指示类型
 int ms;//储存时间间隔
 int score;//
 int isgame=0;//0表示结束，1表示进行中，2表示暂停 
+int fuzhu=0;//这是一个辅助判断消除的变量，用于blockdecline中连续消除第一行的情况 
 
 void prefunction(){
 	int i,j;
@@ -65,15 +66,15 @@ int isblock(int a,int b,int x,int y){
 				break;
 		}break;
 		case 5: switch(b){
-			case 0: if(block[x-1][y]<0||block[x+1][y]<0||block[x-1][y-1]<0)return 0;
+			case 0: if(block[x+1][y]<0||block[x-1][y]<0||block[x-1][y-1]<0)return 0;
 				break;
 			case 1: if(block[x][y-1]<0||block[x][y+1]<0||block[x-1][y+1]<0)return 0;
 				break;
 			case 2: if(block[x+1][y]<0||block[x+1][y+1]<0||block[x-1][y]<0)return 0;
 				break;
-			case 3: if(block[x][y+1]<0||block[x][y-1]<0||block[x+1][y-1]<0)return 0;
+			case 3: if(block[x][y-1]<0||block[x+1][y-1]<0||block[x][y+1]<0)return 0;
 				break;
-		}
+		}break;
 		case 6: switch(b){
 			case 0: if(block[x+1][y]<0||block[x-1][y]<0||block[x-1][y+1]<0)return 0;
 				break;
@@ -128,7 +129,7 @@ void drawblock(int a,int b,int x,int y){//前提是isblock=1
 				break;
 		}break;
 		case 5: switch(b){
-			case 0: block[x-1][y]=block[x+1][y]=block[x-1][y-1]=block[x][y]=5;
+			case 0: block[x+1][y]=block[x-1][y]=block[x-1][y-1]=block[x][y]=5;
 				break;
 			case 1: block[x][y-1]=block[x][y+1]=block[x-1][y+1]=block[x][y]=5;
 				break;
@@ -180,7 +181,11 @@ void blockdecline(){
 int flag,i,j,m,n;
 for(j=1;j<21;j++){
 	flag=1;
-	for(i=1;i<11;i++)if(block[i][j]==0)flag=0;
+	if(fuzhu==1)j=j-1;
+	for(i=1;i<11;i++)if(block[i][j]==0){
+		flag=0;
+		fuzhu=0;
+	}
 	if(flag==1){
 		score++;
 		for(m=j;m<20;m++){
@@ -188,6 +193,8 @@ for(j=1;j<21;j++){
 				block[n][m]=block[n][m+1];
 			}
 			if(j>1)j=j-1;
+			fuzhu=0;
+			if(j==1)fuzhu=1;
 			}
 		}
 	}
