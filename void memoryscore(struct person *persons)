@@ -1,16 +1,31 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-struct person{
-	char name[20];
-	int score;
-	char string[32];
-};
-int num=0;
+#include "main.h"
+#include <stdlib.h>
+
+extern int isgame;
+extern int num;
+extern double winwidth, winheight;
+extern struct person persons[];
 /*创建文件并输入成绩*/ 
-void memoryscore(struct person *persons,int score){
+void memoryscore(int score){
+	
+	double fH = GetFontHeight();
+	double h = fH*2; // 控件高度
+	double w = winwidth/4; // 控件宽度
+	double x = winwidth/2;
+	double y = winheight/2+3*h;
+	
+	drawLabel(x,y,"your name");
+	
+    y=y-1.5*h;
+    textbox(GenUIID(0), x, y, w, h,persons[num].name, 19);
+    y = winheight/2-2*h;
+     if(button(GenUIID(0), x, y, w, h, "确定")){
+     	isgame=0;
+	 }
+     
+	  
 	FILE *fp;
-		if(num=0){
+		if(num==0){
 	  if((fp=fopen("./file.txt","w"))==NULL){
 		printf("\n open file Fail,close!");
 		getchar();
@@ -26,7 +41,7 @@ void memoryscore(struct person *persons,int score){
     }
         persons[num].score=score;
 	itoa(persons[num].score,persons[num].string,10);
-	scanf("%s",persons[num].name);
+	
 	fputs(persons[num].name,fp);
 	fputc('\n',fp);
 	fputs(persons[num].string,fp);
