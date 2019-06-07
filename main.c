@@ -51,6 +51,7 @@ void Main()
     winheight = GetWindowHeight();
     FontSize = GetPointSize(); //获取原始字体大小
 	mainstate = Welcome;
+	isgame=0; 
 	// 注册时间响应函数
 	registerCharEvent(CharEventProcess); // 字符
 	registerKeyboardEvent(KeyboardEventProcess);// 键盘
@@ -72,4 +73,3 @@ void Main()
 			memset(persons[i].name,0,20*sizeof(char));	
 }
 }
-
