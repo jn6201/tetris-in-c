@@ -38,3 +38,68 @@ void memoryscore(){
 	
 	}
 }
+void ranking_list(){
+	 DisplayClear();
+	FILE *fp;
+	int j=0,k;
+	struct person players[50];
+	double x=winwidth/15,y=winheight-winheight/10;
+	  
+    if((fp=fopen("./file.txt","r"))==NULL){
+		printf("\n open file Fail,close!");
+		getchar();
+		exit(1);
+       
+	  }
+	while(!feof(fp)){
+		fscanf(fp,"%s",players[j].name);
+	    fscanf(fp,"%d",&players[j].score);
+
+        	    j++;
+
+	}
+	char string[32];
+	rankscore(players,j); 
+
+	for(k=1;k<j;k++){
+		x=winwidth/15;
+	drawLabel(x, y,players[k].name);
+
+    x=x*3;
+	sprintf(players[k].string,"%d",players[k].score*100);
+	drawLabel(x,y,players[k].string);
+	y=y-winheight/10;
+	
+   }
+   double fH = GetFontHeight();
+	double h = fH*2; // 控件高度
+	double w = winwidth/4; // 控件宽度
+	  x = winwidth/2;
+      y = winheight/2+3*h;
+   if(button(GenUIID(0), x, y, w, h, "返回")){
+     	mainstate=Welcome;
+     	display();
+	 }
+    
+}
+/*排序成绩*/ 
+void rankscore(struct person *p,int n){
+     int j,k;
+//     if(p==NULL)  return 0;
+     struct person temp;
+     for(k=0;k<=n;k++)
+        for(j=0;j<=n-k;j++){
+     	    if(p[j].score<p[j+1].score){
+     		    strcpy(temp.name,p[j].name);
+     		    strcpy(temp.string,p[j].string);
+     	      	temp.score=p[j].score;
+     	    	strcpy(p[j].name,p[j+1].name);
+    	    	strcpy(p[j].string,p[j+1].string);
+     	    	p[j].score=p[j+1].score;
+          		strcpy(p[j+1].name,temp.name);
+          		strcpy(p[j+1].string,temp.string);
+     	    	p[j+1].score=temp.score;
+		    }
+	    }
+
+}
