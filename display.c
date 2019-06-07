@@ -1,13 +1,18 @@
 #include "main.h"
-
+extern int block[12][22];
 extern double winwidth, winheight,FontSize;
 extern int isgame,score,ms;
 extern char FooterStr[30];
 extern char DiffcultyStr[10];
 extern enum gstates mainstate;
+extern int block[12][22];
+extern int newblock;
+extern int start;
+extern struct person persons[100];
+int num=0; 
 
 #if defined(DEMO_MENU)
-// ²Ëµ¥ÑİÊ¾³ÌĞò
+// èœå•æ¼”ç¤ºç¨‹åº
 void drawMenu()
 {
 	SetPointSize(FontSize);
@@ -28,73 +33,78 @@ void drawMenu()
 	double fH = GetFontHeight();
 	double x = 0;
 	double y = winheight;
-	double h = fH*1.5; // ¿Ø¼ş¸ß¶È
-	double w = TextStringWidth(menuListOthers[0])*2; // ¿Ø¼ş¿í¶È
+	double h = fH*1.5; // æ§ä»¶é«˜åº¦
+	double w = TextStringWidth(menuListOthers[0])*2; // æ§ä»¶å®½åº¦
 	double wlist = TextStringWidth(menuListTool[3])*1.2;
-	double xindent = winheight/20; // Ëõ½ø
+	double xindent = winheight/20; // ç¼©è¿›
 	int    selection;
 	
 	// menu bar
 	drawMenuBar(0,y-h,winwidth,h);
-	// File ²Ëµ¥
+	// File èœå•
 	selection = menuList(GenUIID(0), x, y-h, w, wlist, h, menuListFile, sizeof(menuListFile)/sizeof(menuListFile[0]));
 	if( selection>0 ) selectedLabel = menuListFile[selection];
-	if( selection==1 ) MAINGAME();  //¿ªÊ¼ÓÎÏ· 
-//	if( selection==2 ) ShowRanking(); //ÏÔÊ¾ÅÅĞĞ°ñ 
-//	if( selection==3 ) Save_game();     //±£´æÓÎÏ· 
+	if( selection==1 ) MAINGAME();  //å¼€å§‹æ¸¸æˆ 
+	if( selection==2 ) mainstate=showBoard; //æ˜¾ç¤ºæ’è¡Œæ¦œ 
+	if( selection==3 ) MemoryArchiving();     //ä¿å­˜æ¸¸æˆ 
 	if( selection==4 ) exit(-1); // choose to exit
 	
-	// Tool ²Ëµ¥
+	// Tool èœå•
 	menuListTool[1] =(isgame!=1)? "Start | Ctrl-P":"Pause | Ctrl-P";
 	selection = menuList(GenUIID(0),x+w,  y-h, w, wlist,h, menuListTool,sizeof(menuListTool)/sizeof(menuListTool[0]));
 	if( selection>0 ) selectedLabel = menuListTool[selection];
-	if( selection==1 ){ if(isgame==1)  pause();  //ÔİÍ£ÓÎÏ· 
-						else if(isgame==2)   carryon();//»Ö¸´ÓÎÏ· 
-						else if(isgame==0)   MAINGAME();//¿ªÊ¼ÓÎÏ· 
+	if( selection==1 ){ if(isgame==1)  pause();  //æš‚åœæ¸¸æˆ 
+						else if(isgame==2)   carryon();//æ¢å¤æ¸¸æˆ 
+						else if(isgame==0)   MAINGAME();//å¼€å§‹æ¸¸æˆ 
 						} 
-	if( selection==2 ){ //¼ÓËÙ 
+	if( selection==2 ){ //åŠ é€Ÿ 
 		if(mainstate==Playing) faster();
-		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ĞŞ¸ÄÌáÊ¾À¸ 
+		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ä¿®æ”¹æç¤ºæ  
 	}
-	if( selection==3 ){ //¼õËÙ 
+	if( selection==3 ){ //å‡é€Ÿ 
 		if(mainstate==Playing) 	slower();
-		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ĞŞ¸ÄÌáÊ¾À¸ 
+		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ä¿®æ”¹æç¤ºæ  
 	}
 	
-	// Others ²Ëµ¥
+	// Others èœå•
 	selection = menuList(GenUIID(0),x+2*w,y-h, w, wlist, h, menuListOthers,sizeof(menuListOthers)/sizeof(menuListOthers[0]));
 	if( selection>0 ) selectedLabel = menuListOthers[selection];
-	if( selection==1 ) mainstate=showHelp;    //ÏÔÊ¾²Ù×÷°´¼ü½éÉÜ 
-	if( selection==2 ) mainstate=showAbout;   //¹ØÓÚ 
+	if( selection==1 ) mainstate=showHelp;    //æ˜¾ç¤ºæ“ä½œæŒ‰é”®ä»‹ç» 
+	if( selection==2 ) mainstate=showAbout;   //å…³äº 
 	}
 #endif // #if defined(DEMO_MENU)
 
 #if defined(DEMO_BUTTON)
-// °´Å¥ÑİÊ¾³ÌĞò
+// æŒ‰é’®æ¼”ç¤ºç¨‹åº
 void drawButtons()
 {
 	double fH = GetFontHeight();
-	double h = fH*2;  // ¿Ø¼ş¸ß¶È
+	double h = fH*2;  // æ§ä»¶é«˜åº¦
 	double x = winwidth/3.5;  
 	double y = winheight/2+3*h; 
-	double w = winwidth/5; // ¿Ø¼ş¿í¶È
+	double w = winwidth/5; // æ§ä»¶å®½åº¦
 	
-	if( button(GenUIID(0), x, y, w*2, h*2, "ĞÂÓÎÏ·") )   //ĞÂÓÎÏ·°´Å¥ 
+	if( button(GenUIID(0), x, y, w*2, h*2, "æ–°æ¸¸æˆ") )   //æ–°æ¸¸æˆæŒ‰é’® 
 		{	
+//		int i,j;
+//		for(i=0;i<12;i++)
+//		for(j=0;j<22;j++)
+//		    memset(block[i][j], 0, sizeof(block[i][j]));
 			MAINGAME();
 		}
 		
-	if( button(GenUIID(0), x, y-3*h, w*2, h*2, "¶ÁÈ¡´æµµ") )  //¶ÁÈ¡´æµµ°´Å¥ 
+	if( button(GenUIID(0), x, y-3*h, w*2, h*2, "è¯»å–å­˜æ¡£") )  //è¯»å–å­˜æ¡£æŒ‰é’® 
 		{	
-//			ReadArchiving(); 
+		    
+			ReadArchiving(); 
 		}
 		
-	if( button(GenUIID(0), x, y-6*h, w*2, h*2, "ÅÅĞĞ°ñ") )  //ÅÅĞĞ°ñ°´Å¥ 
+	if( button(GenUIID(0), x, y-6*h, w*2, h*2, "æ’è¡Œæ¦œ") )  //æ’è¡Œæ¦œæŒ‰é’® 
 		{	
-//			ranking_list();
+		   mainstate=showBoard;
 		}
 		
-	if( button(GenUIID(0), x, y-9*h, w*2, h*2, "ÍË³ö") )  //ÍË³öÓÎÏ· 
+	if( button(GenUIID(0), x, y-9*h, w*2, h*2, "é€€å‡º") )  //é€€å‡ºæ¸¸æˆ 
 		{	
 			exit(-1);
 		}
@@ -102,7 +112,7 @@ void drawButtons()
 #endif
 
 #if defined(DEMO_TOOLS)
-// ¹¤¾ß°´Å¥ÑİÊ¾³ÌĞò
+// å·¥å…·æŒ‰é’®æ¼”ç¤ºç¨‹åº
 void drawTools()
 {
 	double fH = GetPointSize();
@@ -112,7 +122,7 @@ void drawTools()
 	double w = winwidth/15;
 	double dx= winwidth/15;
 
-	//¿ªÊ¼°´¼ü£¬Ğ§¹ûÍ¬²Ëµ¥¿ªÊ¼ 
+	//å¼€å§‹æŒ‰é”®ï¼Œæ•ˆæœåŒèœå•å¼€å§‹ 
 	if(button(GenUIID(0), x, y, w, h, "")) {
 		if(isgame!=1) {
 			if(isgame==2)  carryon();
@@ -120,7 +130,7 @@ void drawTools()
 		}
 	}
 
-	//»æÖÆ¿ªÊ¼Í¼ĞÎ 
+	//ç»˜åˆ¶å¼€å§‹å›¾å½¢ 
 	SetPenColor("Black");
 	SetPenSize(3);
 	MovePen(x+w/6,y+w/6);
@@ -129,11 +139,11 @@ void drawTools()
 	DrawLine(-w*2.0/3,-w/3);
 	SetPenSize(0);
 	
-	//ÔİÍ£°´¼ü£¬Ğ§¹ûÍ¬²Ëµ¥ÔİÍ£
+	//æš‚åœæŒ‰é”®ï¼Œæ•ˆæœåŒèœå•æš‚åœ
 	if(button(GenUIID(0), x+dx, y, w, h, "")) {
 		if(isgame==1) pause();
 	}
-	//»æÖÆÔİÍ£Í¼ĞÎ 
+	//ç»˜åˆ¶æš‚åœå›¾å½¢ 
 	SetPenColor("Black");
 	SetPenSize(10);
 	MovePen(x+dx+w/3,y+w/6);
@@ -142,11 +152,13 @@ void drawTools()
 	DrawLine(0,w*2.0/3);
 	SetPenSize(0);
 	
-	//Í£Ö¹°´¼ü£¬Ğ§¹ûÍ¬Í£Ö¹ÔİÍ£
+	//åœæ­¢æŒ‰é”®ï¼Œæ•ˆæœåŒåœæ­¢æš‚åœ
 	if(button(GenUIID(0), x+2*dx, y, w, h, "")) {
 //		if(g_gamestate==Playing||g_gamestate==Paused||g_gamestate==GameEnd) Stop_game();
+         MemoryArchiving();
+            mainstate=Welcome;
 	}
-	//»æÖÆÍ£Ö¹Í¼ĞÎ 
+	//ç»˜åˆ¶åœæ­¢å›¾å½¢ 
 	SetPenColor("Black");
 	SetPenSize(22);
 	MovePen(x+2*dx+w/3,y+w/3);
@@ -156,15 +168,15 @@ void drawTools()
 	DrawLine(-w/3,0);
 	SetPenSize(0);
 	
-	//¼õËÙ°´¼ü
+	//å‡é€ŸæŒ‰é”®
 	if(button(GenUIID(0), x, y-dx, w, h, "")) {
 		if(mainstate==Playing) {
 			slower();
 		}
-		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ĞŞ¸ÄÌáÊ¾À¸ 
+		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ä¿®æ”¹æç¤ºæ  
 	}
 	
-	//»æÖÆ¼õËÙÍ¼ĞÎ 
+	//ç»˜åˆ¶å‡é€Ÿå›¾å½¢ 
 	SetPenColor("Black");
 	SetPenSize(3);
 	MovePen(x+w-w/3,y-dx+w/6);
@@ -177,14 +189,14 @@ void drawTools()
 	DrawLine(w/2,-w/3);
 	SetPenSize(0);
 	
-	//¼ÓËÙ°´¼ü
+	//åŠ é€ŸæŒ‰é”®
 	if(button(GenUIID(0), x+2*dx, y-dx, w, h, "")) {
 		if(mainstate==Playing) {
 			faster();
 		}
-		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ĞŞ¸ÄÌáÊ¾À¸ 
+		sprintf(FooterStr,"Diffculty changed to %s!",DiffcultyStr); //ä¿®æ”¹æç¤ºæ  
 	}
-	//»æÖÆ¼ÓËÙÍ¼ĞÎ 
+	//ç»˜åˆ¶åŠ é€Ÿå›¾å½¢ 
 	SetPenColor("Black");
 	SetPenSize(3);
 	MovePen(x+2*dx+w/3,y-dx+w/6);
@@ -197,12 +209,12 @@ void drawTools()
 	DrawLine(-w/2,-w/3);
 	SetPenSize(0);
 	
-	//»æÖÆÏÂÒ»¸öÍ¼ĞÎ 
+	//ç»˜åˆ¶ä¸‹ä¸€ä¸ªå›¾å½¢ 
 	SetPenColor("White");
 	drawRectangle(x/1.25,y*2.58,w*1.5, w*1.5, TRUE);
 	SetPenColor("Black");
 	SetPenSize(3);
-	drawLabel(x/1.24, y*3, "Next :"); //»æÖÆ "Next"
+	drawLabel(x/1.24, y*3, "Next :"); //ç»˜åˆ¶ "Next"
 	MovePen(x/1.25,y*2.58);
 	DrawLine(w*1.5,0);
 	DrawLine(0,w*1.5);
@@ -210,14 +222,14 @@ void drawTools()
 	DrawLine(0,-w*1.5); 
 	
 	
-	//»æÖÆ·ÖÊıÀ¸ 
+	//ç»˜åˆ¶åˆ†æ•°æ  
 	SetPointSize(fH*3);
 	char scoretext[10];
 	itoa(score*100,scoretext,10);
 	drawLabel( x*1.2, y*3, "Score :");
 	drawLabel( x*1.2, y*2.7, scoretext);
 	
-	switch(ms) { //¸ù¾İËÙ¶ÈĞŞ¸ÄÄÑ¶ÈÎÄ×Ö 
+	switch(ms) { //æ ¹æ®é€Ÿåº¦ä¿®æ”¹éš¾åº¦æ–‡å­— 
 			case 250:
 				strcpy(DiffcultyStr,"INSANE");
 				break;
@@ -232,7 +244,7 @@ void drawTools()
 				break;
 		}
 	
-	//»æÖÆÄÑ¶È
+	//ç»˜åˆ¶éš¾åº¦
 	SetPointSize(fH*3);
 	drawLabel( x*1.2, y*2.3,"Diffculty:");
 	if(ms==400) SetPenColor("Green");
@@ -241,20 +253,22 @@ void drawTools()
 	if(ms==250) SetPenColor("Red");
 	drawLabel( x*1.2, y*2.0, DiffcultyStr);
 	
-	//»æÖÆÍË³ö°´Å¥
+	//ç»˜åˆ¶é€€å‡ºæŒ‰é’®
 	SetPointSize(fH);
-	if( button(GenUIID(0), winwidth/1.2, winheight/10,GetFontHeight()*3,GetFontHeight()*1.5, "ÍË³ö") )   //ÍË³ö°´Å¥ 
+	if( button(GenUIID(0), winwidth/1.2, winheight/10,GetFontHeight()*3,GetFontHeight()*1.5, "é€€å‡º") )   //é€€å‡ºæŒ‰é’® 
 		{
 			exit(0);
+            
+            
 		}
 }
 #endif
 
-//»æÖÆµ×À¸
+//ç»˜åˆ¶åº•éƒ¨çŠ¶æ€æ 
 void DrawFooter() {
 	double Font_Height = GetFontHeight();
-	double Start_x = Font_Height/3.0; //×ó¶ÔÆëÆğµã
-	double Footer_Height = Font_Height*1.5; //µ×À¸¸ß¶È
+	double Start_x = Font_Height/3.0; //å·¦å¯¹é½èµ·ç‚¹
+	double Footer_Height = Font_Height*1.5; //åº•æ é«˜åº¦
 	SetPenSize(1);
 	SetPenColor("LightGray");
 	drawRectangle(0, 0, winwidth, Footer_Height, TRUE);
@@ -265,22 +279,38 @@ void DrawFooter() {
 	
 void display()
 {
-	// ÇåÆÁ
+	// æ¸…å±
 	DisplayClear();
 	SetPenColor("Cream");
 	drawRectangle(0, 0, winwidth, winheight, TRUE);
-	// »æÖÆºÍ´¦Àí²Ëµ¥
+	// ç»˜åˆ¶å’Œå¤„ç†èœå•
 	drawMenu();
-	//»æÖÆµ×À¸ 
+	//ç»˜åˆ¶åº•æ  
 	DrawFooter();
-	// °´Å¥
+	// æŒ‰é’®
     if(mainstate==Welcome) drawButtons();
-	// ½«»æÖÆµÄ½á¹ûputµ½ÆÁÄ»ÉÏ
+	// å°†ç»˜åˆ¶çš„ç»“æœputåˆ°å±å¹•ä¸Š
 	//UpdateDisplay();
 	if(mainstate==Playing){
+			
 		drawTools();
 		finaldraw(); 	
 	}
+	if(mainstate==Normalstate){
+			drawTools();
+		finaldraw(); 
+		
+   	    Start_game();
+	}
+//	if(mainstate==Normalstate){
+//		startdraw;
+//	}
 	if(mainstate==showAbout) ShowAbout();
 	if(mainstate==showHelp) ShowHelp();
+	if(mainstate==changeUser)
+	{	
+		memoryscore();
+		num++;
+	}
+	if(mainstate==showBoard) ranking_list();	
 } 
