@@ -3,13 +3,13 @@
 // 仅初始化执行一次
 
 extern int isgame;
-int start=0;
 double winwidth, winheight;   // 窗口尺寸
 double FontSize;  //原始字体大小
-enum gstates mainstate = Welcome;
-char FooterStr[30];
-char DiffcultyStr[10];
+enum gstates mainstate = Welcome;//游戏状态 
+char FooterStr[30]; //底部状态栏 
+char DiffcultyStr[10];//难度 
 struct person persons[100];
+
 void CharEventProcess(char ch)
 {
 	uiGetChar(ch); // GUI字符输入
