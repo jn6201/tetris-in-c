@@ -1,127 +1,75 @@
 #include"main.h"
-int ifgame=0;
-// ÓÃ»§Ö÷³ÌĞòÈë¿Ú
-// ½ö³õÊ¼»¯Ö´ĞĞÒ»´Î
+// ç”¨æˆ·ä¸»ç¨‹åºå…¥å£
+// ä»…åˆå§‹åŒ–æ‰§è¡Œä¸€æ¬¡
+
+extern int isgame;
+int start=0;
+double winwidth, winheight;   // çª—å£å°ºå¯¸
+double FontSize;  //åŸå§‹å­—ä½“å¤§å°
+enum gstates mainstate = Welcome;
+char FooterStr[30];
+char DiffcultyStr[10];
+struct person persons[100];
+void CharEventProcess(char ch)
+{
+	uiGetChar(ch); // GUIå­—ç¬¦è¾“å…¥
+	display(); //åˆ·æ–°æ˜¾ç¤º
+}
+
+// ç”¨æˆ·çš„é”®ç›˜äº‹ä»¶å“åº”å‡½æ•°
+void KeyboardEventProcess(int key, int event)
+{
+	uiGetKeyboard(key,event); // GUIè·å–é”®ç›˜
+	if(isgame==1&&(key==VK_SPACE||key==VK_DOWN||key==VK_LEFT||key==VK_RIGHT))
+		KeyboardEventProcess1(key,event);
+	display(); // åˆ·æ–°æ˜¾ç¤º
+}
+
+// ç”¨æˆ·çš„é¼ æ ‡äº‹ä»¶å“åº”å‡½æ•°
+void MouseEventProcess(int x, int y, int button, int event)
+{
+	uiGetMouse(x,y,button,event); //GUIè·å–é¼ æ ‡
+	display(); // åˆ·æ–°æ˜¾ç¤º
+}
+
+static void DefineColors() { //å®šä¹‰é¢œè‰²
+	DefineColor("LightGray", 240/255.0, 240/255.0, 240/255.0);
+	DefineColor("Orange", 255/255.0, 165/255.0, 0/255.0);
+	DefineColor("Cream", 249/255.0, 236/255.0, 200/255.0);
+	DefineColor("Melange", 210/255.0, 140/255.0, 100/255.0);
+	DefineColor("LightBlue", 150/255.0, 200/255.0, 255/255.0);
+}
+
 void Main() 
 {
-	// ³õÊ¼»¯´°¿ÚºÍÍ¼ĞÎÏµÍ³
+	// åˆå§‹åŒ–çª—å£å’Œå›¾å½¢ç³»ç»Ÿ
 	SetWindowTitle("Tetris");
-	//SetWindowSize(10, 10); // µ¥Î» - Ó¢´ç
-	//SetWindowSize(15, 10);
-	//SetWindowSize(10, 20);  // Èç¹ûÆÁÄ»³ß´ç²»¹»£¬Ôò°´±ÈÀıËõĞ¡
     InitGraphics();
 
-	// »ñµÃ´°¿Ú³ß´ç
+	// è·å¾—çª—å£å°ºå¯¸
     winwidth = GetWindowWidth();
     winheight = GetWindowHeight();
+    FontSize = GetPointSize(); //è·å–åŸå§‹å­—ä½“å¤§å°
+	mainstate = Welcome;
+	// æ³¨å†Œæ—¶é—´å“åº”å‡½æ•°
+	registerCharEvent(CharEventProcess); // å­—ç¬¦
+	registerKeyboardEvent(KeyboardEventProcess);// é”®ç›˜
+	registerMouseEvent(MouseEventProcess);      // é¼ æ ‡
+	registerTimerEvent(TimerEventProcess); 
+	DefineColors(); //å®šä¹‰é¢œè‰² 
+	setMenuColors("LightGray", "Black", "Blue", "White", TRUE); //è®¾ç½®èœå•æ ·å¼
+	setButtonColors("LightBlue", "Black", "Orange", "Black", TRUE); //è®¾ç½®æŒ‰é’®æ ·å¼
+	setTextBoxColors("Orange", "Black", "Melange", "Black", TRUE); //è®¾ç½®æ–‡æœ¬æ¡†æ ·å¼
 
-	// ×¢²áÊ±¼äÏìÓ¦º¯Êı
-	registerCharEvent(CharEventProcess); // ×Ö·û
-	registerKeyboardEvent(KeyboardEventProcess);// ¼üÅÌ
-	registerMouseEvent(MouseEventProcess);      // Êó±ê
-            
-
-	// ´ò¿ª¿ØÖÆÌ¨£¬·½±ãÊä³ö±äÁ¿ĞÅÏ¢£¬±ãÓÚµ÷ÊÔ
+	
+	strcpy(FooterStr, "Welcome to Tetris!"); //åˆå§‹åŒ–åº•æ æ–‡å­—
+	strcpy(DiffcultyStr, "NORMAL"); //åˆå§‹åŒ–éš¾åº¦æ–‡å­—
+	display();
+	// æ‰“å¼€æ§åˆ¶å°ï¼Œæ–¹ä¾¿è¾“å‡ºå˜é‡ä¿¡æ¯ï¼Œä¾¿äºè°ƒè¯•
 	// InitConsole(); 
-
+    int i;
+	for( i=0;i<100;i++){
+			memset(persons[i].name,0,20*sizeof(char));	
+}
 }
 
-#if defined(DEMO_MENU)
-// ²Ëµ¥ÑİÊ¾³ÌĞò
-void drawMenu()
-{ 
-	static char * menuListFile[] = {"File",  
-		"Start | Ctrl-O", 
-		"Show ranking | Ctrl-R",
-		"Save | Ctrl-S",
-		"Exit | Ctrl-E"};
-	static char * menuListTool[] = {"Tool",
-		"Pause | Ctrl-P",
-		"Speed-up | Ctrl->",
-		"Speed-down | Ctrl-<"};
-	static char * menuListHelp[] = {"Help",
-		"Help | Ctrl-H",
-		"About"};
-	static char * selectedLabel = NULL;
-
-	double fH = GetFontHeight();
-	double x = 0; //fH/8;
-	double y = winheight;
-	double h = fH*1.5; // ¿Ø¼ş¸ß¶È
-	double w = TextStringWidth(menuListHelp[0])*2; // ¿Ø¼ş¿í¶È
-	double wlist = TextStringWidth(menuListTool[3])*1.2;
-	double xindent = winheight/20; // Ëõ½ø
-	int    selection;
-	
-	// menu bar
-	drawMenuBar(0,y-h,winwidth,h);
-	// File ²Ëµ¥
-	selection = menuList(GenUIID(0), x, y-h, w, wlist, h, menuListFile, sizeof(menuListFile)/sizeof(menuListFile[0]));
-	if( selection>0 ) selectedLabel = menuListFile[selection];
-//	if( selection==1 ) Start_game();  //¿ªÊ¼ÓÎÏ· 
-//	if( selection==2 ) ShowRanking(); //ÏÔÊ¾ÅÅĞĞ°ñ 
-//	if( selection==3 ) Save_game();     //±£´æÓÎÏ· 
-	if( selection==4 ) exit(-1); // choose to exit
-	
-	// Tool ²Ëµ¥
-//	menuListTool[1] =(g_gamestate!=Playing)? "Start  | Ctrl-P":"Pause  | Ctrl-P";
-	selection = menuList(GenUIID(0),x+w,  y-h, w, wlist,h, menuListTool,sizeof(menuListTool)/sizeof(menuListTool[0]));
-	if( selection>0 ) selectedLabel = menuListTool[selection];
-	if( selection==1 ){ if(ifgame==1)  Pause_game();  //ÔİÍ£ÓÎÏ· 
-						else if(ifgame==2)   Resume_game();//»Ö¸´ÓÎÏ· 
-						else if(ifgame==0)   Start_game();//¿ªÊ¼ÓÎÏ· 
-						} 
-	if( selection==2 )  
-	if( selection==3 )  
-	
-	// Help ²Ëµ¥
-	selection = menuList(GenUIID(0),x+2*w,y-h, w, wlist, h, menuListHelp,sizeof(menuListHelp)/sizeof(menuListHelp[0]));
-	if( selection>0 ) selectedLabel = menuListHelp[selection];
-//	if( selection==1 ) ShowHelp();    //ÏÔÊ¾²Ù×÷°´¼ü½éÉÜ 
-//	if( selection==2 ) ShowAbout();   //¹ØÓÚ 
-	}
-#endif // #if defined(DEMO_MENU)
-
-#if defined(DEMO_BUTTON)
-// °´Å¥ÑİÊ¾³ÌĞò
-void drawButtons()
-{
-	double fH = GetFontHeight();
-	double h = fH*2;  // ¿Ø¼ş¸ß¶È
-	double x = winwidth/3.5;  
-	double y = winheight/2+3*h; 
-	double w = winwidth/5; // ¿Ø¼ş¿í¶È
-	
-	if( button(GenUIID(0), x, y, w*2, h*2, "ĞÂÓÎÏ·") )   //ĞÂÓÎÏ·°´Å¥ 
-		{	
-			MAINGAME();
-		}
-		
-	if( button(GenUIID(0), x, y-3*h, w*2, h*2, "¶ÁÈ¡´æµµ") )  //¶ÁÈ¡´æµµ°´Å¥ 
-		{	
-//			ReadArchiving(); 
-		}
-		
-	if( button(GenUIID(0), x, y-6*h, w*2, h*2, "ÅÅĞĞ°ñ") )  //ÅÅĞĞ°ñ°´Å¥ 
-		{	
-			ranking_list();
-		}
-		
-	if( button(GenUIID(0), x, y-9*h, w*2, h*2, "ÍË³ö") )  //ÍË³öÓÎÏ· 
-		{	
-			exit(-1);
-		}
-}
-#endif
-
-void display()
-{
-	// ÇåÆÁ
-	DisplayClear();
-	// »æÖÆºÍ´¦Àí²Ëµ¥
-	drawMenu();
-	// °´Å¥
-	drawButtons();
-	// ½«»æÖÆµÄ½á¹ûputµ½ÆÁÄ»ÉÏ
-	//UpdateDisplay();
-} 
