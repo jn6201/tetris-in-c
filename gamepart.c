@@ -2,8 +2,9 @@
 
 #define TIMER  1     
 #define xiangsu 0.2
-
+extern int num;
 extern char FooterStr[30];
+extern enum gstates mainstate;
 
 int block[12][22];//初始化为0代表空白，，1，2，3，4，5，6，7，代表不同颜色
 int newblock;//用于存储下一个方块的a类型
@@ -23,25 +24,6 @@ void prefunction(){
 	}
 }
 
-void BlockMove(int direction){
-	switch(direction){
-		case -1:if(isblock(indexa,indexb,indexx-1,indexy)==1){
-			indexx--;
-			clean();
-			drawblock(indexa,indexb,indexx,indexy);
-		}break;
-		case 1:if(isblock(indexa,indexb,indexx+1,indexy)==1){
-			indexx++;
-			clean();
-			drawblock(indexa,indexb,indexx,indexy);
-		}break; 
-		case 0: if(isblock(indexa,indexb,indexx,indexy-1)==1){
-			indexy--;
-			clean();
-			drawblock(indexa,indexb,indexx,indexy);
-		}break;
-	}
-}
 int isblock(int a,int b,int x,int y){
 	if(block[x][y]<0)return 0;
 	switch(a){
@@ -98,6 +80,7 @@ int isblock(int a,int b,int x,int y){
 	}
 	return 1;
 }
+
 void clean(){
 	int i,j;
 	for(i=0;i<12;i++){
@@ -106,6 +89,7 @@ void clean(){
 		}
 	}
 }
+
 void drawblock(int a,int b,int x,int y){//前提是isblock=1
 	switch(a){
 		case 1: block[x][y-1]=block[x-1][y]=block[x-1][y-1]=block[x][y]=1;
@@ -162,13 +146,13 @@ void drawblock(int a,int b,int x,int y){//前提是isblock=1
 
 }
 
-
 int BlockInit(){
 	srand((int)time(0)); 
 	int t;
 	t=((int)rand())%7+1;
 	return t;
 }
+
 void blockicy(){
 	int i,j;
 	for(i=0;i<11;i++){
@@ -177,6 +161,7 @@ void blockicy(){
 		}
 	}
 }
+
 void blockdecline(){
 int flag,i,j,m,n;
 for(j=1;j<21;j++){
@@ -199,6 +184,7 @@ for(j=1;j<21;j++){
 		}
 	}
 }
+
 void finaldraw(){
 	int i,j;
 	for(i=0;i<12;i++){
@@ -273,28 +259,34 @@ void finaldraw(){
 						drawRectangle((x-1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
 						drawRectangle((x+1)*xiangsu,(y-1)*xiangsu,xiangsu,xiangsu,1);
-						break;
-							
+						break;							
 		}
 }
 
 void MAINGAME(){
 	score=0;
 	isgame=1;
+	mainstate=Playing; 
+	strcpy(FooterStr, "Game start!");
 	prefunction();
 	indexx=6;
 	indexy=19;
 	newblock=BlockInit();
 	drawblock(BlockInit(),0,indexx,indexy);
-	ms=400;//最初速度
-	startTimer(TIMER, 400);/*500ms?¨ê±?÷′￥·￠*/
+	ms=350;//最初速度
+	startTimer(TIMER, ms);
 } 
+
+void Start_game(){
+	isgame=1;
+	mainstate=Playing; 
+    ms=350;//最初速度
+	startTimer(TIMER, ms);
+}
 
 void KeyboardEventProcess1(int key, int event)
 {
-	int tmp;
-	tmp=ms;
-		switch (event) {
+	switch (event) {
 	 	case KEY_DOWN:
 			 switch (key) {
 			     case VK_SPACE:
@@ -333,7 +325,6 @@ void KeyboardEventProcess1(int key, int event)
 			 }
 			 break;
 		case KEY_UP:
-			 ms=tmp;
 			 break;
 	 }	 
 }
@@ -341,7 +332,6 @@ void KeyboardEventProcess1(int key, int event)
 void TimerEventProcess(int timerID)
 {
     if(isgame==1){
-    if(score%10==0&&ms>=300)ms=ms-50;
 	switch(timerID){
     	case TIMER:
     	if(isblock(indexa,indexb,indexx,indexy-1)==1){
@@ -363,24 +353,38 @@ void TimerEventProcess(int timerID)
     			display();
     		}
     		else{//开启游戏结束流程
-    			cancelTimer(TIMER);
-				isgame=0;
+    		cancelTimer(TIMER);
+			mainstate=changeUser;
     		}
     	}
 
     } 
+  }
 }
-	  
-}
+
 void pause(){
 	if(isgame==1){
 		isgame=2;
 		strcpy(FooterStr, "Pause");
 	}
 }
+
 void carryon(){
 	if(isgame==2){
 		isgame=1;
 		strcpy(FooterStr, "Carry on!");
+		mainstate=Playing; 
 	}
+}
+
+void faster(){
+	cancelTimer(TIMER);
+    if(ms>250)ms=ms-50;
+    startTimer(TIMER, ms);
+	}
+	
+void slower(){
+	cancelTimer(TIMER);
+    if(ms<400)ms=ms+50;
+    startTimer(TIMER, ms);
 }
