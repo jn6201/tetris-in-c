@@ -1,119 +1,40 @@
 #include "main.h"
+#include <stdlib.h>
 
-extern int num;
-extern  int isgame; 
+extern enum gstates mainstate;
+extern int isgame;
+extern int num,score;
 extern double winwidth, winheight;
-void ranking_list(){
+extern struct person persons[];
+	char name[20]="your name";
+/*创建文件并输入成绩*/ 
+void memoryscore(){
+	
+	double fH = GetFontHeight();
+	double h = fH*2; // 控件高度
+	double w = winwidth/4; // 控件宽度
+	double x = winwidth/2;
+	double y = winheight/2+3*h;
 	 DisplayClear();
-	FILE *fp;
-	int j=0;
-	struct person players[50];
-	double x=winwidth/15,y=winheight-winheight/10;
-	if(num==0)  drawLabel(x,y,"blank");
-	else {if((fp=fopen("./file.txt","r"))==NULL){
+	drawLabel(x,y,"your name");
+
+    y=y-1.5*h;
+    textbox(GenUIID(0), x, y, w, h,name, 20);
+    y = winheight/2-2*h;
+     if(button(GenUIID(0), x, y, w, h, "确定")){
+	  FILE *fp;
+		
+	  if((fp=fopen("./file.txt","a"))==NULL){
 		printf("\n open file Fail,close!");
 		getchar();
 		exit(1);
 	  }
-	while(!feof(fp)){
-		fgets(players[j].name,20,fp);
-	    fgets(players[j].string,32,fp);
-	    players[j].score=atoi(players[j].string);
-	    j++;
-	}
+        strcpy(persons[num].name,name);
+        persons[num].score=score;
+
+    fprintf(fp,"%s\n%d\n",persons[num].name, persons[num].score);
+	fclose(fp);
+	mainstate= Welcome; 
 	
-	rankscore(players); 
-	for(j=0;j<=num;j++){
-	drawLabel(x,    y,players[j].name);
-	x=x+sizeof(players[j].name);
-	drawLabel(x,y,players[j].string);
-	y=y-winheight/10;
 	}
-   }
-   double fH = GetFontHeight();
-	double h = fH*2; // 控件高度
-	double w = winwidth/4; // 控件宽度
-	  x = winwidth/2;
-      y = winheight/2+3*h;
-   if(button(GenUIID(0), x, y, w, h, "返回")){
-     	isgame=0;
-	 }
-}
-/*排序成绩*/ 
-void rankscore(struct person *p){
-     int j,k;
-     struct person temp;
-     for(k=0;k<=num;k++)
-        for(j=0;j<=num-k;j++){
-     	    if(p[j].score<p[j+1].score){
-     		    strcpy(temp.name,p[j].name);
-     	      	temp.score=p[j].score;
-     	    	strcpy(p[j].name,p[j+1].name);
-     	    	p[j].score=p[j+1].score;
-          		strcpy(p[j+1].name,temp.name);
-     	    	p[j+1].score=temp.score;
-		    }
-	    }
-	
-}#include "main.h"
-/*extern struct person{
-	char name[20];
-	int score;
-	char string[32];
-};*/
-extern int num;
-extern  int isgame; 
-extern double winwidth, winheight;
-void ranking_list(){
-	 DisplayClear();
-	FILE *fp;
-	int j=0;
-	struct person players[50];
-	double x=winwidth/15,y=winheight-winheight/10;
-	if(num==0)  drawLabel(x,y,"blank");
-	else {if((fp=fopen("./file.txt","r"))==NULL){
-		printf("\n open file Fail,close!");
-		getchar();
-		exit(1);
-	  }
-	while(!feof(fp)){
-		fgets(players[j].name,20,fp);
-	    fgets(players[j].string,32,fp);
-	    players[j].score=atoi(players[j].string);
-	    j++;
-	}
-	
-	rankscore(players); 
-	for(j=0;j<=num;j++){
-	drawLabel(x,    y,players[j].name);
-	x=x+sizeof(players[j].name);
-	drawLabel(x,y,players[j].string);
-	y=y-winheight/10;
-	}
-   }
-   double fH = GetFontHeight();
-	double h = fH*2; // 控件高度
-	double w = winwidth/4; // 控件宽度
-	  x = winwidth/2;
-      y = winheight/2+3*h;
-   if(button(GenUIID(0), x, y, w, h, "返回")){
-     	isgame=0;
-	 }
-}
-/*排序成绩*/ 
-void rankscore(struct person *p){
-     int j,k;
-     struct person temp;
-     for(k=0;k<=num;k++)
-        for(j=0;j<=num-k;j++){
-     	    if(p[j].score<p[j+1].score){
-     		    strcpy(temp.name,p[j].name);
-     	      	temp.score=p[j].score;
-     	    	strcpy(p[j].name,p[j+1].name);
-     	    	p[j].score=p[j+1].score;
-          		strcpy(p[j+1].name,temp.name);
-     	    	p[j+1].score=temp.score;
-		    }
-	    }
-	
 }
