@@ -39,7 +39,7 @@ void memoryscore(){
 	}
 }
 void ranking_list(){
-	 DisplayClear();
+	if(isgame==1) pause(); //保证游戏暂停
 	FILE *fp;
 	int j=0,k;
 	struct person players[50];
@@ -77,8 +77,8 @@ void ranking_list(){
 	  x = winwidth/2;
       y = winheight/2+3*h;
    if(button(GenUIID(0), x, y, w, h, "返回")){
-     	mainstate=Welcome;
-     	display();
+     	if(isgame==2){carryon();mainstate=Playing;} //恢复进程状态 
+	if(isgame==0) mainstate=Welcome;
 	 }
     
 }
