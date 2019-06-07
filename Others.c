@@ -2,10 +2,11 @@
 
 extern double winwidth, winheight,FontSize;
 extern int isgame;
+extern enum gstates mainstate;
 
-// ÏÔÊ¾ About 
+// æ˜¾ç¤º About 
 void ShowAbout() {
-	if(isgame==1) pause(); //±£Ö¤ÓÎÏ·ÔİÍ£
+	if(isgame==1) pause(); //ä¿è¯æ¸¸æˆæš‚åœ
 	FontSize = GetFontHeight();
 	SetPenSize(FontSize*1.5);
 	double h = FontSize*1.5;
@@ -16,14 +17,15 @@ void ShowAbout() {
 	drawLabel(winwidth/2.0-TextStringWidth("A Simple Tetris Game")/2, y+22*GetFontHeight(), "A Simple Tetris Game");
 	drawLabel(winwidth/2.0-TextStringWidth("Developed by our team")/2, y+20*GetFontHeight(), "Developed by our team");
 	drawLabel(winwidth/2.0-TextStringWidth("Thanks for playing!")/2, y+18*GetFontHeight(), "Thanks for playing!");
-	if(button(GenUIID(0), x, y, w, h, "Yes!")){ //°´ÏÂÈ·ÈÏ°´Å¥
-		carryon(); //»Ö¸´½ø³Ì×´Ì¬ 
+	if(button(GenUIID(0), x, y, w, h, "Yes!")){ //æŒ‰ä¸‹ç¡®è®¤æŒ‰é’®
+		if(isgame==2){carryon();mainstate=Playing;} //æ¢å¤è¿›ç¨‹çŠ¶æ€
+		if(isgame==0) mainstate=Welcome;
 	}
 }
 
-//ÏÔÊ¾ Help 
+//æ˜¾ç¤º Help 
 void ShowHelp() {
-	if(isgame==1) pause(); //±£Ö¤ÓÎÏ·ÔİÍ£
+	if(isgame==1) pause(); //ä¿è¯æ¸¸æˆæš‚åœ
 	FontSize = GetFontHeight();
 	SetPointSize(FontSize*2);
 	double h = FontSize*1.5;
@@ -35,7 +37,8 @@ void ShowHelp() {
 	drawLabel(winwidth/2.0-TextStringWidth("Use Space To Rotate")/2, y+20*GetFontHeight(), "Use Space To Rotate");
 	drawLabel(winwidth/2.0-TextStringWidth("Use Down Key To Set Current Tetromino")/2, y+18*GetFontHeight(), "Use Down Key To Set Current Tetromino");
 	drawLabel(winwidth/2.0-TextStringWidth("Other Shortcut Keys Pls See Menu ;)")/2, y+16*GetFontHeight(), "Other Shortcut Keys Pls See Menu ;)");
-	if(button(GenUIID(0), x, y, w, h, "Yes!")){ //°´ÏÂÈ·ÈÏ°´Å¥
-		carryon();; //»Ö¸´½ø³Ì×´Ì¬ 
+	if(button(GenUIID(0), x, y, w, h, "Yes!")){ //æŒ‰ä¸‹ç¡®è®¤æŒ‰é’®
+		if(isgame==2){carryon();mainstate=Playing;} //æ¢å¤è¿›ç¨‹çŠ¶æ€ 
+		if(isgame==0) mainstate=Welcome;
 	}
 }
