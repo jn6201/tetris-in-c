@@ -1,9 +1,130 @@
-main.c（主界面）
-1.主界面：新游戏、读取存档、排行榜、退出
-2.菜单栏：（1）File：重新开始(restart)、保存游戏(save)、退出（exit)
-           (2)Toll:暂停（pause）、速度加快（speed-up）、速度减慢（speed-down）
-           (3)Help:About(对游戏的介绍）
-pause.c（暂停界面）
-1.继续
-2.读取存档
-3.退出
+程序整体需求分析
+需要有一个显示函数来控制所有的显示内容
+需要鼠标事件、键盘事件、字符事件、时间响应函数
+需要自定义颜色并设置菜单、按钮、文本框样式，使得整体更加美观
+需要一个变量储存程序的状态
+需要实现游戏的功能
+需要有储存游戏状态、显示排行榜、帮助、关于等功能
+显示部分需求分析
+最上方需要有菜单栏控制程序
+底部需要有状态栏显示程序状态
+需要分成主界面与游戏开始界面
+游戏界面需要显示分数、难度、下一个方块形状
+游戏界面需要有按钮控制游戏
+功能模块设计
+主函数部分
+初始化窗口和图形系统，初始化程序状态与游戏状态，获取窗口尺寸与字体大小，注册响应函数，自定义颜色并设置菜单、按钮、文本框样式。
+显示部分
+菜单栏部分：分三个功能区块“File”、“Tool”、“Others”。“File”包括开始游戏、显示排行榜、保存、退出。“Tool”包括游戏的暂停继续，速度加快减慢。“Others”包括显示游戏帮助、关于。
+底部状态栏部分：对程序的控制操作会显示在状态栏。
+主界面的按钮部分：新游戏、读取存档、排行榜、退出。
+游戏界面的按钮部分：暂停、继续、保存、难度增加、难度降低、退出。
+游戏界面分数部分：每消除一行方块得到100分。
+游戏部分难度部分：分为Easy，Normal，Hard，Insane四个难度等级。
+数据结构设计
+主函数部分
+enum gstates {Welcome=0, Playing, changeUser, showBoard, showAbout, showHelp, Normalstate};
+enum gstates mainstate; // Welcome表示主界面，Playing表示游戏界面，showBoard表示显示排行榜，showAbout表示显示关于，showHelp表示显示帮助，changeUser表示更改用户。
+struct person{char name[20];int score;char string[32];};//用于储存用户及其分数
+double winwidth, winheight;，FontSize; // 窗口尺寸与字体大小
+char FooterStr[30]; //用于显示底部状态栏的字符串
+char DiffcultyStr[10]; //用于显示难度的字符串
+显示部分
+int num=0; //用来储存用户个数
+函数功能描述
+主函数部分
+   *函数原型：void Main()；
+   *功能描述：主函数
+   *参数描述： winwidth, winheight 窗口尺寸，FontSize 原始字体大小，mainstate 游戏状态，FooterStr 底部状态栏，DiffcultyStr 难度，persons[100] 用户数据。
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：初始化程序，获取窗口尺寸、字体大小，将Welcome赋给mainstate表示主界面，将0赋给isgame表示游戏未进行。注册响应函数，设置菜单按钮样式。将"Welcome to Tetris!"copy给FooterStr，初始化底栏文字。将"NORMAL" copy给DiffcultyStr，初始化难度。
+
+   *函数原型：void CharEventProcess(char ch)；
+   *功能描述：用户字符事件响应
+   *参数描述：ch 输入的字符
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：输入字符，刷新显示
+
+   *函数原型：void KeyboardEventProcess(int key, int event)；
+   *功能描述：用户键盘事件响应
+   *参数描述：key 键位，event 事件
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：若按下左、右、下、空格键位，执行KeyboardEventProcess1(key,event);函数，刷新显示
+
+   *函数原型：void MouseEventProcess(int x, int y, int button, int event)；
+   *功能描述：用户鼠标事件响应
+   *参数描述： x，y 鼠标位置，
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：获取鼠标的点击事件，刷新显示
+
+   *函数原型：static void DefineColors()；
+   *功能描述：自定义颜色
+   *参数描述： 无
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：用RGB定义颜色并命名
+显示部分
+   *函数原型：void display()；
+   *功能描述：控制程序界面的显示
+   *参数描述： mainstate 表示游戏状态，num 用户个数，winwidth,winheight窗口大小
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：先用DisplayClear()清屏，再用Cream颜色填充整个窗口界面，绘制菜单栏与底部状态栏。若mainstate等于Welcome，绘制欢迎界面按钮；若mainstate等于Playing，绘制游戏界面工具按钮与游戏本体部分；若mainstate等于showAbout，显示关于；若mainstate等于showHelp，显示帮助；若mainstate等于changeUser，储存用户；若mainstate等于showBoard，显示排行榜。
+
+   *函数原型：void drawMenu()；
+   *功能描述：绘制菜单栏
+   *参数描述： x、y储存位置信息，h控件高度，w控件宽度，selection控制菜单按键，fH字体大小
+   *返回值描述：无
+   *重要局部变量定义：static char * menuListFile，* menuListTool，*menuListOthers
+   *重要局部变量用途描述：储存文本
+   *函数算法描述：定义指针数组，储存菜单栏的文本。绘制菜单栏及其点击事件后的函数。
+
+   *函数原型：void drawButtons()；
+   *功能描述：绘制主界面按钮
+   *参数描述： x、y储存位置信息，h控件高度，w控件宽度，fH字体大小
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：绘制四个按钮“新游戏”、“读取存档”、“排行榜”、“退出”，并在对应的点击事件写入相应函数。
+
+   *函数原型：void drawTools()；
+   *功能描述：绘制游戏界面工具按钮、分数、难度
+   *参数描述： x、y储存位置信息，h控件高度，w控件宽度，fH字体大小，dx缩进，ms下落间隔
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：绘制工具图标，并在相同位置绘制按钮，在点击事件处写入相应函数。用drawLabel函数绘制分数、难度，难度根据ms的改变而改变。
+
+   *函数原型：void DrawFooter()；
+   *功能描述：绘制底部状态栏
+   *参数描述：FooterStr底栏文本
+   *返回值描述：无
+   *重要局部变量定义：Font_Height，Start_x，Footer_Height
+   *重要局部变量用途描述：字体高度，左对齐起点，底栏高度
+   *函数算法描述：用灰色将底栏填充，在左端写入FooterStr
+
+   *函数原型：void ShowAbout()；
+   *功能描述：显示关于
+   *参数描述： winwidth、winheight窗口大小,FontSize字体大小，isgame游戏状态，mainstate程序状态
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：绘制文本框介绍程序，绘制“Yes”按钮用于返回主界面或继续游戏。
+
+   *函数原型：void ShowHelp()；
+   *功能描述：显示帮助
+   *参数描述： winwidth、winheight窗口大小,FontSize字体大小，isgame游戏状态，mainstate程序状态
+   *返回值描述：无
+   *重要局部变量定义：无
+   *重要局部变量用途描述：无
+   *函数算法描述：绘制文本框介绍如何进行游戏，绘制“Yes”按钮用于返回主界面或继续游戏。
