@@ -393,7 +393,7 @@ void fuckthemall(){
 	int i,j;
 	for(i=1;i<21;i++){
 		for(j=1;j<11;j++){
-			block[i][j]=0;
+			block[j][i]=0;
 		}
 	}
 }
