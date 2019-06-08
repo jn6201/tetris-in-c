@@ -388,3 +388,12 @@ void slower(){
     if(ms<400)ms=ms+50;
     startTimer(TIMER, ms);
 }
+
+void fuckthemall(){
+	int i,j;
+	for(i=1;i<21;i++){
+		for(j=1;j<11;j++){
+			block[i][j]=0;
+		}
+	}
+}
