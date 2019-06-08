@@ -35,8 +35,7 @@ void drawMenu()
 	double y = winheight;
 	double h = fH*1.5; // 控件高度
 	double w = TextStringWidth(menuListOthers[0])*2; // 控件宽度
-	double wlist = TextStringWidth(menuListTool[3])*1.2;
-	double xindent = winheight/20; // 缩进
+	double wlist = TextStringWidth(menuListTool[3])*1.2; // 文本宽度 
 	int    selection;
 	
 	// menu bar
@@ -46,7 +45,8 @@ void drawMenu()
 	if( selection>0 ) selectedLabel = menuListFile[selection];
 	if( selection==1 ) MAINGAME();  //开始游戏 
 	if( selection==2 ) mainstate=showBoard; //显示排行榜 
-	if( selection==3 ) MemoryArchiving();     //保存游戏 
+	if( selection==3 ){ MemoryArchiving();
+						mainstate=Welcome;}     //保存游戏 
 	if( selection==4 ) exit(-1); // choose to exit
 	
 	// Tool 菜单
@@ -86,10 +86,6 @@ void drawButtons()
 	
 	if( button(GenUIID(0), x, y, w*2, h*2, "新游戏") )   //新游戏按钮 
 		{	
-//		int i,j;
-//		for(i=0;i<12;i++)
-//		for(j=0;j<22;j++)
-//		    memset(block[i][j], 0, sizeof(block[i][j]));
 			MAINGAME();
 		}
 		
@@ -121,36 +117,40 @@ void drawTools()
 	double y = winheight/4;
 	double w = winwidth/15;
 	double dx= winwidth/15;
-
-	//开始按键，效果同菜单开始 
-	if(button(GenUIID(0), x, y, w, h, "")) {
-		if(isgame!=1) {
-			if(isgame==2)  carryon();
-//			else if(g_gamestate!=Cleaning)Start_game();
-		}
-	}
-
-	//绘制开始图形 
-	SetPenColor("Black");
-	SetPenSize(3);
-	MovePen(x+w/6,y+w/6);
-	DrawLine(0,w*2.0/3);
-	DrawLine(w*2.0/3,-w/3);
-	DrawLine(-w*2.0/3,-w/3);
-	SetPenSize(0);
 	
-	//暂停按键，效果同菜单暂停
-	if(button(GenUIID(0), x+dx, y, w, h, "")) {
-		if(isgame==1) pause();
+	if(isgame==2){
+		//开始按键，效果同菜单开始 
+		if(button(GenUIID(0), x, y, w, h, "")) {
+			if(isgame!=1) {
+				if(isgame==2)  carryon();
+	//			else if(g_gamestate!=Cleaning)Start_game();
+			}
+		}
+	
+		//绘制开始图形 
+		SetPenColor("Black");
+		SetPenSize(3);
+		MovePen(x+w/6,y+w/6);
+		DrawLine(0,w*2.0/3);
+		DrawLine(w*2.0/3,-w/3);
+		DrawLine(-w*2.0/3,-w/3);
+		SetPenSize(0);
 	}
-	//绘制暂停图形 
-	SetPenColor("Black");
-	SetPenSize(10);
-	MovePen(x+dx+w/3,y+w/6);
-	DrawLine(0,w*2.0/3);
-	MovePen(x+dx+w-w/3,y+w/6);
-	DrawLine(0,w*2.0/3);
-	SetPenSize(0);
+	
+	if(isgame==1){	
+		//暂停按键，效果同菜单暂停
+		if(button(GenUIID(0), x, y, w, h, "")) {
+			if(isgame==1) pause();
+		}
+		//绘制暂停图形 
+		SetPenColor("Black");
+		SetPenSize(10);
+		MovePen(x+w/3,y+w/6);
+		DrawLine(0,w*2.0/3);
+		MovePen(x+w-w/3,y+w/6);
+		DrawLine(0,w*2.0/3);
+		SetPenSize(0);
+	}
 	
 	//停止按键，效果同停止暂停
 	if(button(GenUIID(0), x+2*dx, y, w, h, "")) {
@@ -257,9 +257,7 @@ void drawTools()
 	SetPointSize(fH);
 	if( button(GenUIID(0), winwidth/1.2, winheight/10,GetFontHeight()*3,GetFontHeight()*1.5, "退出") )   //退出按钮 
 		{
-			exit(0);
-            
-            
+			exit(0);        
 		}
 }
 #endif
@@ -287,19 +285,17 @@ void display()
 	drawMenu();
 	//绘制底栏 
 	DrawFooter();
-	// 按钮
-    if(mainstate==Welcome) drawButtons();
-	// 将绘制的结果put到屏幕上
-	//UpdateDisplay();
+	
+    if(mainstate==Welcome) drawButtons();// 按钮
+
 	if(mainstate==Playing){
 			
 		drawTools();
 		finaldraw(); 	
 	}
 	if(mainstate==Normalstate){
-			drawTools();
-		finaldraw(); 
-		
+		drawTools();
+		finaldraw(); 	
    	    Start_game();
 	}
 //	if(mainstate==Normalstate){
