@@ -58,9 +58,10 @@ void ranking_list(){
         	    j++;
 
 	}
+	fclose(fp);
 	char string[32];
 	rankscore(players,j); 
-
+         if(j>10)  j=10;
 	for(k=1;k<j;k++){
 		x=winwidth/15;
 	drawLabel(x, y,players[k].name);
